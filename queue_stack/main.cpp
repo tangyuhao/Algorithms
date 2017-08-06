@@ -1,6 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <stack>
+#include <string>
 
 #define N 5
 #define N2 16
@@ -185,7 +186,121 @@ void testGetLongestParenthese() {
     std::cout << "The longest parenthese is: " << getLongestParenthese2(str) << std::endl;
 }
 
+float calReversePolishNotation(const char *notation[], int size) {
+    float num1, num2;
+    std::stack<float> s;
+    const char *token;
+    for (int i = 0; i < size; i++) {
+        token = notation[i];
+        if (token[0] == '+' || token[0] == '-' || token[0] == '*' || token[0] == '/') {
+            num1 = s.top();
+            s.pop();
+            num2 = s.top();
+            s.pop();
+            switch (token[0]) {
+                case '+':
+                    s.push(num1 + num2);
+                    break;
+                case '-':
+                    s.push(num1 - num2);
+                    break;
+                case '*':
+                    s.push(num1 * num2);
+                    break;
+                case '/':
+                    s.push(num2 / num1);
+            }
+        } else {
+            s.push(atoi(token));
+        }
+    }
+    return s.top();
+}
+
+void testCalReversePolishNotation() {
+    const char *str[] = {"2", "5", "+", "3", "*"};
+    int size = sizeof(str) / sizeof(const char *);
+    float value = calReversePolishNotation(str, size);
+    std::cout << value << std::endl;
+}
+
+/*
+ * input: nifix expression like: 2 * 3 + 4 / 2
+ * output: reverse polish notation: 2 3 * 4 2 / +
+ */
+void convertNifix2Polish(const char *input[], int size) {
+    std::stack<const char *> s;
+    char **output = new char *[size];
+    int curIndex = 0;
+    const char *token;
+    const char *curPopout;
+    for (int i = 0; i < size; i++) {
+        token = input[i];
+        switch (token[0]) {
+            case ')':
+                // 右括号：弹出第一个左括号上面所有，丢弃该左括号
+                while (s.size() != 0) {
+                    curPopout = s.top();
+                    s.pop();
+                    if (curPopout[0] == '(')
+                        break;
+                    else
+                        output[curIndex++] = (char *) curPopout;
+                }
+                break;
+            case '(':
+                // 左括号 进stack
+                s.push(token);
+                break;
+                // 碰到'+''-'，将栈中所有运算符弹出，送到输出队列中
+            case '+':
+            case '-':
+                while (s.size() != 0) {
+                    curPopout = s.top();
+                    s.pop();
+                    if (curPopout[0] == '(') {
+                        s.push(curPopout);
+                        break;
+                    } else
+                        output[curIndex++] = (char *) curPopout;
+                }
+                s.push(token);
+                break;
+                // 碰到'*''/'，将栈中所有乘除运算符弹出，送到输出队列中
+            case '*':
+            case '/':
+                while (s.size() != 0) {
+                    curPopout = s.top();
+                    s.pop();
+                    if (curPopout[0] == '(' || curPopout[0] == '+' || curPopout[0] == '-') {
+                        s.push(curPopout);
+                        break;
+                    } else
+                        output[curIndex++] = (char *) curPopout;
+                }
+                s.push(token);
+                break;
+            default:
+                output[curIndex++] = (char *) token;
+        }
+    }
+    while (s.size() != 0) {
+        output[curIndex++] = (char *) s.top();
+        s.pop();
+    }
+    for (int i = 0; i < curIndex; i++) {
+        std::cout << output[i] << " ";
+    }
+    std::cout << std::endl;
+}
+
+void testConvertNifix2Polish() {
+    const char *str[] = {"(", "2", "+", "5", ")", "*", "4"};
+    int size = sizeof(str) / sizeof(const char *);
+    convertNifix2Polish(str, size);
+}
+
 int main() {
-    testGetLongestParenthese();
+    testConvertNifix2Polish();
     return 0;
 }
