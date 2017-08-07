@@ -1,5 +1,4 @@
 #include <iostream>
-
 class BigInt {
 private:
     std::string digits; // start from the lowest digit
@@ -38,7 +37,7 @@ public:
         }
     }
 
-    // get
+    // get the right order of digits
     std::string getDigits() const {
         return std::string(this->digits.rbegin(), this->digits.rend());
     }
@@ -237,6 +236,34 @@ public:
             tmpSum.sign = true;
         return tmpSum;
     }
+    // only return the quotient
+    BigInt operator/(BigInt b) {
+        if (b == BigInt("0")) {
+            throw std::overflow_error("Divide by zero exception");
+        }
+        std::string reverseOrderDigits = "";
+        BigInt remain = *this;
+        remain.sign = true;
+
+        char curDigit;
+        if (remain < b.abs()) {
+            std::string sign = this->sign == b.sign ? "+" : "-";
+            return BigInt(sign + "0");
+        }
+        // digitsDiff -> quotient's digits will be between (digitsDiff, digitsDiff + 1)
+        size_t digitsDiff = this->digits.length() - b.digits.length();
+        size_t len2 = b.digits.length();
+        size_t remainDigits = len2 - 1;
+        // i is the number of 0s you need to add for dividing
+        for (int i = digitsDiff; i >= 0; i--) {
+            curDigit = calOneDigitForDivide(remain.getDigits().substr(0, remainDigits + 1), b.getDigits(), &remainDigits);
+            reverseOrderDigits.append(1, curDigit);
+            remain = remain - b.abs() * BigInt(std::string(1, '1').append(i, '0')) * BigInt(std::string(1, curDigit));
+        }
+        BigInt quotient(reverseOrderDigits);
+        quotient.sign = this->sign == b.sign;
+        return quotient;
+    }
 
 
 private:
@@ -292,6 +319,36 @@ private:
         return result;
     }
 
+    /*
+     * calculate only one digit, for dividing
+     */
+    char static calOneDigitForDivide(std::string d1, std::string d2, size_t *remainDigits) {
+        BigInt dividend(d1), divisor(d2);
+        BigInt curRemain;
+        const BigInt zero("0");
+        if (dividend < divisor) {
+            *remainDigits = d1.length();
+            return '0';
+        }
+        char start = 1 + '0', end = 9 + '0', curDigit;
+        BigInt curProduct;
+        do {
+            curDigit = (start + end) / 2;
+            curProduct = BigInt(std::string(1, curDigit)) * divisor;
+            curRemain = dividend - curProduct;
+            if (curRemain >= zero && curRemain < divisor) {
+                size_t len = curRemain.getDigits().length();
+                *remainDigits = curRemain == zero ? 0 : len;
+                return curDigit;
+            } else if (curRemain < zero) {
+                end = curDigit - 1;
+            } else {
+                start = curDigit + 1;
+            }
+        } while (1);
+    }
+
+
     void static removeTrailingZeros(std::string &digits) {
         size_t tmp = digits.find_last_not_of('0');
         if (tmp != std::string::npos) {
@@ -312,8 +369,11 @@ int main() {
     BigInt b("+234");
     BigInt c("+233");
     BigInt d("-233");
-    BigInt e("-10000");
-    BigInt f("-23324234235235235565756845634267425656235324632564");
-    std::cout << (e * f);
+    BigInt e("-893242342348932479823749235623490872190346");
+    BigInt f("3234");
+    std::cout << (e / f) << std::endl;
+    std::cout << (e + f) << std::endl;
+    std::cout << (e - f) << std::endl;
+    std::cout << (e * f) << std::endl;
     return 0;
 }
