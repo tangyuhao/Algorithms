@@ -1,4 +1,5 @@
 #include <iostream>
+
 class BigInt {
 private:
     std::string digits; // start from the lowest digit
@@ -236,6 +237,7 @@ public:
             tmpSum.sign = true;
         return tmpSum;
     }
+
     // only return the quotient
     BigInt operator/(BigInt b) {
         if (b == BigInt("0")) {
@@ -256,7 +258,8 @@ public:
         size_t remainDigits = len2 - 1;
         // i is the number of 0s you need to add for dividing
         for (int i = digitsDiff; i >= 0; i--) {
-            curDigit = calOneDigitForDivide(remain.getDigits().substr(0, remainDigits + 1), b.getDigits(), &remainDigits);
+            curDigit = calOneDigitForDivide(remain.getDigits().substr(0, remainDigits + 1), b.getDigits(),
+                                            &remainDigits);
             reverseOrderDigits.append(1, curDigit);
             remain = remain - b.abs() * BigInt(std::string(1, '1').append(i, '0')) * BigInt(std::string(1, curDigit));
         }
