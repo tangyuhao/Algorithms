@@ -41,7 +41,7 @@ std::string LCS(const std::string str1, const std::string str2) {
     for (size_t i = 1; i <= len1; i++) {
         for (size_t j = 1; j <= len2; j++) {
             if (str1[i - 1] == str2[j - 1]) {
-                chess[i][j] = chess[i][j - 1] + 1;
+                chess[i][j] = chess[i - 1][j - 1] + 1;
             } else {
                 chess[i][j] = std::max(chess[i][j - 1], chess[i - 1][j]);
             }
@@ -104,7 +104,7 @@ void calAllLCS(std::string str1, std::string str2) {
     for (size_t i = 1; i <= len1; i++) {
         for (size_t j = 1; j <= len2; j++) {
             if (str1[i - 1] == str2[j - 1]) {
-                chess[i][j] = chess[i][j - 1] + 1;
+                chess[i][j] = chess[i - 1][j - 1] + 1;
             } else {
                 chess[i][j] = std::max(chess[i][j - 1], chess[i - 1][j]);
             }
@@ -130,7 +130,7 @@ std::vector<int> intArrayLCS(std::vector<int> m, std::vector<int> n) {
     for (int i = 1; i <= mLen; i++) {
         for (int j = 1; j <= nLen; j++) {
             if (m[i - 1] == n[j - 1]) {
-                chess[i][j] = chess[i - 1][j] + 1;
+                chess[i][j] = chess[i - 1][j - 1] + 1;
             } else {
                 chess[i][j] = std::max(chess[i - 1][j], chess[i][j - 1]);
             }
@@ -182,18 +182,18 @@ void testArrayLCS() {
 }
 
 void testLCS() {
-    std::string s1 = "abc";
-    std::string s2 = "abc";
+    std::string s1 = "abc242dfd";
+    std::string s2 = "abc23sdsa";
     std::cout << LCS(s1, s2) << std::endl;
 }
 
 void testAllLCS() {
-    std::string s1 = "abedc";
-    std::string s2 = "abcde";
+    std::string s1 = "aabcd";
+    std::string s2 = "aadcb";
     calAllLCS(s1, s2);
 }
 
 int main() {
-    testLIS();
+    testLCS();
     return 0;
 }
