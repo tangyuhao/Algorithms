@@ -55,7 +55,7 @@ std::string LCS(const std::string str1, const std::string str2) {
             i--;
             j--;
         } else {
-            if (chess[i - 1][j - 2] < chess[i - 2][j - 1]) {
+            if (chess[i][j - 1] < chess[i - 1][j]) {
                 i--;
             } else {
                 j--;
@@ -75,11 +75,11 @@ void printAllLCS(std::vector<std::vector<int>> chess, std::string curSeq, std::s
             i--;
             j--;
         } else {
-            if (chess[i - 1][j - 2] < chess[i - 2][j - 1]) {
+            if (chess[i][j - 1] < chess[i - 1][j]) {
                 i--;
-            } else if (chess[i - 2][j - 1] < chess[i - 1][j - 2]) {
+            } else if (chess[i - 1][j] < chess[i][j - 1]) {
                 j--;
-            } else { // chess[i - 2][j - 1] == chess[i - 1][j - 2]
+            } else { // chess[i - 1][j] == chess[i][j - 1]
                 printAllLCS(chess, curSeq, str1, str2, i - 1, j);
                 printAllLCS(chess, curSeq, str1, str2, i, j - 1);
                 return;
@@ -114,6 +114,73 @@ void calAllLCS(std::string str1, std::string str2) {
     printAllLCS(chess, seq, str1, str2, len1, len2);
 }
 
+/*
+ * int version for LCS
+ */
+std::vector<int> intArrayLCS(std::vector<int> m, std::vector<int> n) {
+    size_t mLen = m.size();
+    size_t nLen = n.size();
+    std::vector<std::vector<int>> chess(mLen + 1, std::vector<int>(nLen + 1));
+    for (int i = 0; i <= mLen; i++) {
+        chess[i][0] = 0;
+    }
+    for (int i = 0; i <= nLen; i++) {
+        chess[0][i] = 0;
+    }
+    for (int i = 1; i <= mLen; i++) {
+        for (int j = 1; j <= nLen; j++) {
+            if (m[i - 1] == n[j - 1]) {
+                chess[i][j] = chess[i - 1][j] + 1;
+            } else {
+                chess[i][j] = std::max(chess[i - 1][j], chess[i][j - 1]);
+            }
+        }
+    }
+    std::vector<int> output;
+    size_t i = mLen, j = nLen;
+    while (i != 0 && j != 0) {
+        if (m[i - 1] == n[j - 1]) {
+            output.push_back(m[i - 1]);
+            i--;
+            j--;
+        } else {
+            if (chess[i][j - 1] > chess[i - 1][j]) {
+                j--;
+            } else {
+                i--;
+            }
+        }
+    }
+    std::reverse(output.begin(), output.end());
+    return output;
+}
+
+/*
+ * use LCS to solve LIS(longest increasing sequence
+ */
+std::vector<int> LIS(std::vector<int> m) {
+    std::vector<int> n = m;
+    std::sort(n.begin(), n.end());
+    return intArrayLCS(m, n);
+}
+
+void testLIS() {
+    std::vector<int> a = {1, 2, 5, 3, 5, 1, 2, 8, 2, 3, 4, 5, 11, 2, 12};
+    std::vector<int> output = LIS(a);
+    for (int i = 0; i < output.size(); i++) {
+        std::cout << output[i] << " ";
+    }
+}
+
+void testArrayLCS() {
+    std::vector<int> a1 = {1, 2, 5, 3, 5};
+    std::vector<int> a2 = {3, 5, 2, 5};
+    std::vector<int> output = intArrayLCS(a1, a2);
+    for (int i = 0; i < output.size(); i++) {
+        std::cout << output[i] << " ";
+    }
+}
+
 void testLCS() {
     std::string s1 = "abc";
     std::string s2 = "abc";
@@ -121,12 +188,12 @@ void testLCS() {
 }
 
 void testAllLCS() {
-    std::string s1 = "abcde";
-    std::string s2 = "abedc";
+    std::string s1 = "abedc";
+    std::string s2 = "abcde";
     calAllLCS(s1, s2);
 }
 
 int main() {
-    testAllLCS();
+    testLIS();
     return 0;
 }
