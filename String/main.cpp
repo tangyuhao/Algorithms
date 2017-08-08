@@ -164,6 +164,28 @@ std::vector<int> LIS(std::vector<int> m) {
     return intArrayLCS(m, n);
 }
 
+/*
+ * permutation of array using recursion
+ */
+void permutationRecursion(std::vector<int> array, size_t start, size_t end) {
+    if (start == end - 1) {
+        for (size_t i = 0; i < end; i++) {
+            std::cout << array[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+    for (size_t i = start; i < end; i++) {
+        std::swap(array[i], array[0]);
+        permutationRecursion(array, start + 1, end);
+        std::swap(array[i], array[0]);
+    }
+}
+
+void testPermutationRecursion() {
+    std::vector<int> a = {1, 2, 3, 4};
+    permutationRecursion(a, 0, 4);
+}
+
 void testLIS() {
     std::vector<int> a = {1, 2, 5, 3, 5, 1, 2, 8, 2, 3, 4, 5, 11, 2, 12};
     std::vector<int> output = LIS(a);
@@ -188,12 +210,12 @@ void testLCS() {
 }
 
 void testAllLCS() {
-    std::string s1 = "aabcd";
-    std::string s2 = "aadcb";
+    std::string s1 = "aabcddsfsdnfdsifodsj";
+    std::string s2 = "aadcbdfdsoifjdso";
     calAllLCS(s1, s2);
 }
 
 int main() {
-    testLCS();
+    testPermutationRecursion();
     return 0;
 }
