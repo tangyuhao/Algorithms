@@ -175,15 +175,43 @@ void permutationRecursion(std::vector<int> array, size_t start, size_t end) {
         std::cout << std::endl;
     }
     for (size_t i = start; i < end; i++) {
-        std::swap(array[i], array[0]);
+        std::swap(array[i], array[start]);
         permutationRecursion(array, start + 1, end);
-        std::swap(array[i], array[0]);
+        std::swap(array[i], array[start]);
     }
 }
 
 void testPermutationRecursion() {
     std::vector<int> a = {1, 2, 3, 4};
     permutationRecursion(a, 0, 4);
+}
+
+/*
+ * Permutation of array without duplication if same int exists.
+ */
+void permutationNoDuplication(std::vector<int> array, size_t start, size_t end) {
+    if (start == end - 1) {
+        for (size_t i = 0; i < end; i++) {
+            std::cout << array[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+    for (size_t i = start; i < end; i++) {
+        bool dup = false;
+        for (size_t k = start; k < i; k++) {
+            if (array[i] == array[k])
+                dup = true;
+        }
+        if (dup) continue;
+        std::swap(array[i], array[start]);
+        permutationNoDuplication(array, start + 1, end);
+        std::swap(array[i], array[start]);
+    }
+}
+
+void testPermutationNoDuplication() {
+    std::vector<int> a = {2, 2, 2, 2};
+    permutationNoDuplication(a, 0, 4);
 }
 
 void testLIS() {
@@ -216,6 +244,6 @@ void testAllLCS() {
 }
 
 int main() {
-    testPermutationRecursion();
+    testPermutationNoDuplication();
     return 0;
 }
