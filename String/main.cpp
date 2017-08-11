@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <iterator>
 
 
 // 循环左移算法， 时间复杂度：O(N), 空间复杂度: O(1)
@@ -209,6 +210,50 @@ void permutationNoDuplication(std::vector<int> array, size_t start, size_t end) 
     }
 }
 
+/*
+ * permutation without using recursion
+ */
+void permutationNoRecursion(std::vector<int> array) {
+    // sort from the smallest to the largest
+    std::sort(array.begin(), array.end());
+    for (std::vector<int>::iterator iter = array.begin(); iter != array.end(); iter++) {
+        std::cout << *iter << " ";
+    }
+    std::cout << std::endl;
+    std::vector<int>::iterator it;
+    while (1) {
+        bool isFinished = true;
+        for (it = array.end() - 1; it >= array.begin(); it--) {
+            if (*it < *(it + 1)) {
+                isFinished = false;
+                break;
+            }
+        }
+        if (isFinished) break;
+        int min = INT_MAX;
+        std::vector<int>::iterator minIt;
+        for (auto it2 = it; it2 != array.end(); it2++) {
+            if (*it2 > *it && min > *it2) {
+                min = *it2;
+                minIt = it2;
+            }
+        }
+        std::swap(*it, *minIt);
+        std::reverse(it + 1, array.end());
+
+        // print
+        for (std::vector<int>::iterator iter = array.begin(); iter != array.end(); iter++) {
+            std::cout << *iter << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void testPermutationNoRecursion() {
+    std::vector<int> arr({1,2,3,4});
+    permutationNoRecursion(arr);
+}
+
 void testPermutationNoDuplication() {
     std::vector<int> a = {2, 2, 2, 2};
     permutationNoDuplication(a, 0, 4);
@@ -244,6 +289,6 @@ void testAllLCS() {
 }
 
 int main() {
-    testPermutationNoDuplication();
+    testPermutationNoRecursion();
     return 0;
 }
