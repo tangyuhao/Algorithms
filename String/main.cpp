@@ -279,6 +279,45 @@ std::string longestPalindromicSubStr(std::string s) {
     return subStr;
 }
 
+std::vector<int> calNext(std::string pattern) {
+    int len = pattern.length();
+    std::vector<int> next(pattern.length(), -1);
+    int j = 0;
+    int k = next[j];
+    while (j < len - 1) {
+        if (k == -1 || pattern[j] == pattern[k]) {
+            next[j++] = k++;
+        } else {
+            k = next[k];
+        }
+    }
+    return next;
+}
+
+int KMP(std::string text, std::string pattern) {
+    int i = 0, j = 0;
+    int patternLen = pattern.length();
+    std::vector<int> next = calNext(pattern);
+    while (i < text.length()) {
+        if (j == -1 || text[i] == pattern[j]) {
+            i++;
+            j++;
+        } else {
+            j = next[j];
+        }
+        if (j == patternLen) {
+            return i - patternLen;
+        }
+    }
+    return -1;
+}
+
+void testKMP() {
+    std::string text("hello world!");
+    std::string pattern("world");
+    std::cout << KMP(text, pattern) << std::endl;
+}
+
 void testLongestPalindromicSubStr() {
     std::cout << longestPalindromicSubStr("aabbbbbaa") << std::endl;
 }
@@ -323,6 +362,6 @@ void testAllLCS() {
 }
 
 int main() {
-    testLongestPalindromicSubStr();
+    testKMP();
     return 0;
 }
