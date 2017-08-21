@@ -249,8 +249,42 @@ void permutationNoRecursion(std::vector<int> array) {
     }
 }
 
+std::string longestPalindromicSubStr(std::string s) {
+    std::string convertStr;
+    for (char c : s) {
+        convertStr.push_back('#');
+        convertStr.push_back(c);
+    }
+    convertStr.push_back('#');
+
+    std::vector<int> sArr(convertStr.length(), 0);
+    int mx = 1, id = 0;
+    for (int i = 1; i < convertStr.length(); i++) {
+        if (mx > i) {
+            sArr[i] = std::min(mx - i, sArr[2 * id - i]);
+        } else {
+            sArr[i] = 1;
+        }
+        for (; i - sArr[i] >= 0 && convertStr[sArr[i] + i] == convertStr[i - sArr[i]]; sArr[i]++);
+        if (mx < i + sArr[i]) {
+            mx = i + sArr[i];
+            id = i;
+        }
+    }
+    auto maxPosition = std::max_element(sArr.begin(), sArr.end());
+    int maxIndex = std::distance(sArr.begin(), maxPosition);
+    std::string subStr(convertStr.begin() + maxIndex - *maxPosition + 1,
+                       convertStr.begin() + maxIndex + *maxPosition - 1);
+    subStr.erase(std::remove(subStr.begin(), subStr.end(), '#'), subStr.end());
+    return subStr;
+}
+
+void testLongestPalindromicSubStr() {
+    std::cout << longestPalindromicSubStr("aabbbbbaa") << std::endl;
+}
+
 void testPermutationNoRecursion() {
-    std::vector<int> arr({1,2,3,4});
+    std::vector<int> arr({1, 2, 3, 4});
     permutationNoRecursion(arr);
 }
 
@@ -289,6 +323,6 @@ void testAllLCS() {
 }
 
 int main() {
-    testPermutationNoRecursion();
+    testLongestPalindromicSubStr();
     return 0;
 }
