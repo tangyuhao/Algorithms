@@ -286,7 +286,7 @@ std::vector<int> calNext(std::string pattern) {
     int k = next[j];
     while (j < len - 1) {
         if (k == -1 || pattern[j] == pattern[k]) {
-            next[j++] = k++;
+            next[++j] = ++k;
         } else {
             k = next[k];
         }
@@ -315,6 +315,10 @@ int KMP(std::string text, std::string pattern) {
 void testKMP() {
     std::string text("hello world!");
     std::string pattern("world");
+    std::cout << "The next array is:";
+    std::vector<int> nextArr = calNext(pattern);
+    for (auto i : nextArr) std::cout << i;
+    std::cout << std::endl;
     std::cout << KMP(text, pattern) << std::endl;
 }
 
