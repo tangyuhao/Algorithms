@@ -294,6 +294,10 @@ std::vector<int> calNext(std::string pattern) {
     return next;
 }
 
+/*
+ * Time Complexity: O(M + N)
+ * KMP的next，实际上是建立了DFA (Deterministic Finite Automaton 有穷自动机)
+ */
 int KMP(std::string text, std::string pattern) {
     int i = 0, j = 0;
     int patternLen = pattern.length();
@@ -312,12 +316,32 @@ int KMP(std::string text, std::string pattern) {
     return -1;
 }
 
+/*
+ * get the minimal period of a string
+ */
+int getMinimalPeriod(std::string str) {
+    int len = str.length();
+    str.push_back('#');
+    std::vector<int> next = calNext(str);
+    int period = len - *(next.end() - 1);
+    if (period == len)
+        return -1;
+    if (len % period == 0)
+        return period;
+    return -1;
+}
+
+void testGetMinimalPeriod() {
+    std::cout << getMinimalPeriod("abcdddabcddd");
+}
+
+
 void testKMP() {
     std::string text("hello world!");
     std::string pattern("world");
     std::cout << "The next array is:";
     std::vector<int> nextArr = calNext(pattern);
-    for (auto i : nextArr) std::cout << i;
+    for (auto i : nextArr) std::cout << i << " ";
     std::cout << std::endl;
     std::cout << KMP(text, pattern) << std::endl;
 }
@@ -366,6 +390,6 @@ void testAllLCS() {
 }
 
 int main() {
-    testKMP();
+    testGetMinimalPeriod();
     return 0;
 }
