@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <numeric>
 
 
 /*
@@ -90,7 +91,50 @@ void testFindFirstLostInteger() {
     std::cout << findFirstLostInteger(arr);
 }
 
+template<typename T>
+std::vector<size_t> sort_indexes(const std::vector<T> &v) {
+    std::vector<size_t> idx(v.size());
+    std::iota(idx.begin(), idx.end(), 0);
+
+    // sort indexes based on comparing values in v
+    std::sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) { return v[i1] < v[i2]; });
+    return idx;
+}
+
+/*
+ * find the subarray whose sum is most close to 0
+ */
+std::vector<int> findZeroSubArray(std::vector<int> arr) {
+    std::vector<int> sumArr(arr.size(), 0);
+    sumArr[0] = arr[0];
+    for (int i = 1; i < arr.size(); i++) {
+        sumArr[i] = sumArr[i - 1] + arr[i];
+    }
+    std::vector<size_t> idx = sort_indexes(sumArr);
+    int min = std::abs(sumArr[idx[0]]), minIdx = 0;
+
+    for (int i = 1; i < sumArr.size(); i++) {
+        if (min > std::abs(sumArr[idx[i]] - sumArr[idx[i - 1]])) {
+            minIdx = i;
+            min = std::abs(sumArr[idx[i]] - sumArr[idx[i - 1]]);
+        }
+    }
+    if (minIdx == 0) {
+        return std::vector<int>(arr.begin(), arr.begin() + idx[0] + 1);
+    } else {
+        size_t i1 = std::min(idx[minIdx], idx[minIdx - 1]);
+        size_t i2 = std::max(idx[minIdx], idx[minIdx - 1]);
+        return std::vector<int>(arr.begin() + i1 + 1, arr.begin() + i2 + 1);
+    }
+}
+
+void testFindZeroSubArray() {
+    std::vector<int> arr({3, 5, 1, 2, -3, 7, 4, 8});
+    std::vector<int> subArr = findZeroSubArray(arr);
+    std::for_each(subArr.begin(), subArr.end(), [=](int i) { std::cout << i << " "; });
+}
+
 int main() {
-    testFindFirstLostInteger();
+    testFindZeroSubArray();
     return 0;
 }
