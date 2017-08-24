@@ -319,7 +319,40 @@ void testCantorExpansionV2() {
     std::for_each(orginalArr.begin(), orginalArr.end(), [](int i) { std::cout << i << " "; });
 }
 
+/*
+ * Use Branch and Bound to solve N-Sum problem
+ * assume the array only contains positive integers
+ */
+
+void nSum(std::vector<bool> choose, std::vector<int> arr, int sum, int idx, int curSum, int residue) {
+    int size = arr.size();
+    if (idx >= size) return;
+    if (curSum + arr[idx] == sum) {
+        choose[idx] = true;
+        int i = 0;
+        std::for_each(choose.begin(), choose.end(), [&i, arr](bool use) { if (use) std::cout << arr[i] << " "; i++;});
+        std::cout << std::endl;
+        choose[idx] = false;
+    } else if ((curSum + residue >= sum) && (curSum + arr[idx] <= sum)) {
+        choose[idx] = true;
+        nSum(choose, arr, sum, idx + 1, curSum + arr[idx], residue - arr[idx]);
+    }
+    if (curSum + residue - arr[idx] >= sum) {
+        choose[idx] = false;
+        nSum(choose, arr, sum, idx + 1, curSum, residue - arr[idx]);
+    }
+}
+
+void testNSum() {
+    std::vector<int> arr({1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+    int residue = 0;
+    std::for_each(arr.begin(), arr.end(), [&residue](int i) { residue += i; });
+    int sum = 40;
+    std::vector<bool> choose(arr.size(), false);
+    nSum(choose, arr, sum, 0, 0, residue);
+}
+
 int main() {
-    testCantorExpansionV2();
+    testNSum();
     return 0;
 }
