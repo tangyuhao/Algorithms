@@ -330,7 +330,10 @@ void nSum(std::vector<bool> choose, std::vector<int> arr, int sum, int idx, int 
     if (curSum + arr[idx] == sum) {
         choose[idx] = true;
         int i = 0;
-        std::for_each(choose.begin(), choose.end(), [&i, arr](bool use) { if (use) std::cout << arr[i] << " "; i++;});
+        std::for_each(choose.begin(), choose.end(), [&i, arr](bool use) {
+            if (use) std::cout << arr[i] << " ";
+            i++;
+        });
         std::cout << std::endl;
         choose[idx] = false;
     } else if ((curSum + residue >= sum) && (curSum + arr[idx] <= sum)) {
@@ -352,7 +355,52 @@ void testNSum() {
     nSum(choose, arr, sum, 0, 0, residue);
 }
 
+void nSumWithNegtive(std::vector<bool> choose, std::vector<int> arr, int sum, int idx, int curSum, int negtive,
+                     int positive) {
+    int size = arr.size();
+    if (idx >= size) return;
+    if (curSum + arr[idx] == sum) {
+        choose[idx] = true;
+        int i = 0;
+        std::for_each(choose.begin(), choose.end(), [&i, arr](bool use) {
+            if (use) std::cout << arr[i] << " ";
+            i++;
+        });
+        std::cout << std::endl;
+        choose[idx] = false;
+    }
+    if (arr[idx] >= 0) {
+        if ((curSum + positive >= sum) && (curSum + arr[idx] < sum)) {
+            choose[idx] = true;
+            nSumWithNegtive(choose, arr, sum, idx + 1, curSum + arr[idx], negtive, positive - arr[idx]);
+        }
+        if (curSum + positive - arr[idx] >= sum) {
+            choose[idx] = false;
+            nSumWithNegtive(choose, arr, sum, idx + 1, curSum, negtive, positive - arr[idx]);
+        }
+    } else { // arr[idx] < 0
+        if (curSum + arr[idx] + positive >= sum) {
+            choose[idx] = true;
+            nSumWithNegtive(choose, arr, sum, idx + 1, curSum + arr[idx], negtive - arr[idx], positive);
+        }
+        if ((curSum + negtive <= sum) && (curSum + positive >= sum)) {
+            choose[idx] = false;
+            nSumWithNegtive(choose, arr, sum, idx + 1, curSum, negtive - arr[idx], positive);
+        }
+    }
+}
+
+void testNSumWithNegative() {
+    std::vector<int> arr({-3, -5, -2, 4, 2, 1, 3});
+    int positive = 0, negative = 0;
+    std::for_each(arr.begin(), arr.end(),
+                  [&positive, &negative](int i) { if (i >= 0) positive += i; else negative += i; });
+    int sum = 5;
+    std::vector<bool> choose(arr.size(), false);
+    nSumWithNegtive(choose, arr, sum, 0, 0, negative, positive);
+}
+
 int main() {
-    testNSum();
+    testNSumWithNegative();
     return 0;
 }
