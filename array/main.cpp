@@ -266,7 +266,60 @@ void testGetMapGap() {
     std::cout << getMaxGap(arr);
 }
 
+/*
+ * suppose a array has the first n positive integers, like: s = {1,4,3,5,2,6}
+ * then we calculate the amount of numbers from [i+1, end] which are smaller than s[i]
+ * this is the cantor array, for this example it should be: {0,2,1,1,0,0}
+ *
+ * this function get the cantor array and recover the original array
+ * time complexity: O(N^2), space complexity: O(N)
+ */
+std::vector<int> cantorExpansion(std::vector<int> cantor) {
+    int size = cantor.size();
+    std::vector<int> sortedArr(size);
+    std::vector<int> output(size);
+    std::iota(sortedArr.begin(), sortedArr.end(), 1);
+    for (int i = 0; i < size; i++) {
+        output[i] = sortedArr[cantor[i]];
+        sortedArr.erase(sortedArr.begin() + cantor[i]);
+    }
+    return output;
+}
+
+void testCantorExpansion() {
+    std::vector<int> cantor({0, 2, 1, 1, 0, 0});
+    std::vector<int> orginalArr = cantorExpansion(cantor);
+    std::for_each(orginalArr.begin(), orginalArr.end(), [](int i) { std::cout << i << " "; });
+}
+
+/*
+ * this version has space complexity: O(1)
+ */
+std::vector<int> cantorExpansionV2(std::vector<int> cantor) {
+    int size = cantor.size();
+    std::vector<int> output(size);
+    int min = 1;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            if (cantor[j] == 0) {
+                output[j] = min++;
+                for (int k = 0; k <= j; k++) {
+                    cantor[k]--;
+                }
+                break;
+            }
+        }
+    }
+    return output;
+}
+
+void testCantorExpansionV2() {
+    std::vector<int> cantor({0, 2, 1, 1, 0, 0});
+    std::vector<int> orginalArr = cantorExpansionV2(cantor);
+    std::for_each(orginalArr.begin(), orginalArr.end(), [](int i) { std::cout << i << " "; });
+}
+
 int main() {
-    testGetMapGap();
+    testCantorExpansionV2();
     return 0;
 }

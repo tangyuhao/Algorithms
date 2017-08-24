@@ -33,3 +33,7 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - find the local maximum in an array, Time Complexity:O(logN)
   - find the first lost positive integer in an array, Time Complexity: O(N), Space Complexity: O(1)
   - find the subarray whose sum is closest to 0, Time Complexity: O(Nlog(N))
+  - find the subarray whose sum is maximum
+  - solve the Holland Flag problem
+  - get the maximum gap after sorting with only time complexity O(N)
+  - solve cantor array expansion problem
