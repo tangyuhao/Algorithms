@@ -134,7 +134,37 @@ void testFindZeroSubArray() {
     std::for_each(subArr.begin(), subArr.end(), [=](int i) { std::cout << i << " "; });
 }
 
+std::vector<int> getMaxContinuousSubArray(std::vector<int> arr) {
+    std::vector<int> maxSum(arr.size());
+    maxSum[0] = arr[0];
+    int max = maxSum[0];
+    int start = 0, end = 0; // the index range of max subarray
+    int bestStart = 0, bestEnd = 0;
+    for (int i = 1; i < maxSum.size(); i++) {
+        if (maxSum[i - 1] + arr[i] > arr[i]) {
+            maxSum[i] = maxSum[i - 1] + arr[i];
+            end = i;
+        } else {
+            maxSum[i] = arr[i];
+            start = i;
+            end = i;
+        }
+        if (max < maxSum[i]) {
+            max = maxSum[i];
+            bestStart = start;
+            bestEnd = end;
+        }
+    }
+    return std::vector<int>(arr.begin() + bestStart, arr.begin() + bestEnd + 1);
+}
+
+void testGetMaxContinuousSubArray() {
+    std::vector<int> arr({3, 5, 11, 2, -8998989, 7, 4, 8});
+    std::vector<int> subArr = getMaxContinuousSubArray(arr);
+    std::for_each(subArr.begin(), subArr.end(), [=](int i) { std::cout << i << " "; });
+}
+
 int main() {
-    testFindZeroSubArray();
+    testGetMaxContinuousSubArray();
     return 0;
 }
