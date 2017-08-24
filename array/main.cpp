@@ -164,7 +164,36 @@ void testGetMaxContinuousSubArray() {
     std::for_each(subArr.begin(), subArr.end(), [=](int i) { std::cout << i << " "; });
 }
 
+/*
+ * assume the array only has 0, 1, 2;
+ * we need to sort them to be like: 0001111222
+ */
+std::vector<int> hollandFlag(std::vector<int> arr) {
+    int begin = 0, cur = 0, end = arr.size() - 1;
+    while (cur < end) {
+        if (arr[cur] == 0) {
+            if (cur == begin) {
+                cur++;
+                begin++;
+            } else {
+                std::swap(arr[cur], arr[begin++]);
+            }
+        } else if (arr[cur] == 1) {
+            cur++;
+        } else { // arr[cur] == 2
+            std::swap(arr[cur], arr[end--]);
+        }
+    }
+    return arr;
+}
+
+void testHollandFlag() {
+    std::vector<int> arr({1, 2, 2, 2, 2, 2, 0, 0, 0, 1, 2, 1, 2, 1, 0, 0, 0});
+    std::vector<int> sortArr = hollandFlag(arr);
+    std::for_each(sortArr.begin(), sortArr.end(), [](int i) { std::cout << i << " "; });
+}
+
 int main() {
-    testGetMaxContinuousSubArray();
+    testHollandFlag();
     return 0;
 }
