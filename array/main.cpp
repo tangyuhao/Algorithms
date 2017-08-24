@@ -391,7 +391,16 @@ void nSumWithNegtive(std::vector<bool> choose, std::vector<int> arr, int sum, in
 }
 
 void testNSumWithNegative() {
-    std::vector<int> arr({-3, -5, -2, 4, 2, 1, 3});
+    std::vector<int> arr({4, 3, 1, -3, -5, -2, 2});
+    int size = arr.size();
+    int end = size - 1, cur = 0;
+    while (cur < end) {
+        if (arr[cur] >= 0) {
+            std::swap(arr[cur], arr[end--]);
+        } else {
+            cur++;
+        }
+    }
     int positive = 0, negative = 0;
     std::for_each(arr.begin(), arr.end(),
                   [&positive, &negative](int i) { if (i >= 0) positive += i; else negative += i; });

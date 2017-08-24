@@ -37,3 +37,4 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - solve the Holland Flag problem
   - get the maximum gap after sorting with only time complexity O(N)
   - solve cantor array expansion problem
+  - N sum problem
