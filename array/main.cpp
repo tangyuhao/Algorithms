@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <numeric>
+#include <cmath>
 
 
 /*
@@ -193,7 +194,79 @@ void testHollandFlag() {
     std::for_each(sortArr.begin(), sortArr.end(), [](int i) { std::cout << i << " "; });
 }
 
+class nBucket {
+public:
+    bool isValid;
+    int minVal;
+    int maxVal;
+
+    nBucket() { isValid = false; }
+
+    void add(int a) {
+        if (!isValid) {
+            minVal = maxVal = a;
+            isValid = true;
+        } else if (minVal > a) {
+            minVal = a;
+        } else if (maxVal < a) {
+            maxVal = a;
+        }
+    }
+};
+
+/*
+ * get the maximum gap after sorting
+ * time complexity: O(N), space complexity: O(N)
+ */
+int getMaxGap(std::vector<int> arr) {
+    int min = INT_MAX, max = INT_MIN;
+    size_t size = arr.size();
+    // calculate the min and max value of the array
+    for (int i = 0; i < size; i++) {
+        if (min > arr[i]) {
+            min = arr[i];
+        } else if (max < arr[i]) {
+            max = arr[i];
+        }
+    }
+
+    if (size == 2) {
+        return max - min;
+    }
+
+    std::vector<nBucket> buckets(size - 1);
+    if (max - min == 0) {
+        return 0;
+    }
+    float bucketSize = float(max - min) / (size - 1);
+    // add value into the buckets
+    for (int i = 0; i < size; i++) {
+        int idx = int(std::floor(float(arr[i] - min) / bucketSize));
+        idx = idx == size - 1 ? size - 2 : idx;
+        buckets[idx].add(arr[i]);
+    }
+
+    // calculate the maximum gap
+    int maxGap = INT_MIN;
+    int lastMax = buckets[0].maxVal;
+    for (int i = 1; i < size - 1; i++) {
+        if (!buckets[i].isValid) {
+            continue;
+        }
+        if (maxGap < buckets[i].minVal - lastMax) {
+            maxGap = buckets[i].minVal - lastMax;
+        }
+        lastMax = buckets[i].maxVal;
+    }
+    return maxGap;
+}
+
+void testGetMapGap() {
+    std::vector<int> arr({1, 2});
+    std::cout << getMaxGap(arr);
+}
+
 int main() {
-    testHollandFlag();
+    testGetMapGap();
     return 0;
 }
