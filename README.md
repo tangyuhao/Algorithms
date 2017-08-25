@@ -40,3 +40,5 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - N sum problem
 - tree
   - binary search tree related algorithm
+    - find/insert/delete
+    - postOrder/inOrder/preOrder traverse

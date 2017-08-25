@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <deque>
 
 class BSTNode {
 public:
@@ -171,17 +172,83 @@ bool BinarySearchTree::deleteNode(int value) {
     return true;
 }
 
-void BinarySearchTree::preOrder(Visit visit) const {}
+void BinarySearchTree::preOrder(Visit visit) const {
+    if (!pRoot) {
+        return;
+    }
+    std::deque<BSTNode *> stack;
+    stack.push_back(pRoot);
+    while (!stack.empty()) {
+        BSTNode *node = stack.back();
+        stack.pop_back();
+        visit(node->value);
+        if (node->pLeft) {
+            stack.push_back(node->pLeft);
+        }
+        if (node->pRight) {
+            stack.push_back(node->pRight);
+        }
+    }
+}
 
-void BinarySearchTree::inOrder(Visit visit) const {}
+void BinarySearchTree::inOrder(Visit visit) const {
+    if (!pRoot)
+        return;
+    std::deque<std::pair<BSTNode *, int>> stack;
+    stack.push_back(std::make_pair(pRoot, 0));
+    while (!stack.empty()) {
+        BSTNode *curNode = stack.back().first;
+        int times = stack.back().second;
+        stack.pop_back();
+        if (times == 0) {
+            if (curNode->pRight) {
+                stack.push_back(std::make_pair(curNode->pRight, 0));
+            }
+            stack.push_back(std::make_pair(curNode, 1));
+            if (curNode->pLeft) {
+                stack.push_back(std::make_pair(curNode->pLeft, 0));
+            }
+        } else {
+            visit(curNode->value);
+        }
+    }
+}
 
-void BinarySearchTree::postOrder(Visit visit) const {}
+void BinarySearchTree::postOrder(Visit visit) const {
+    if (!pRoot)
+        return;
+    std::deque<std::pair<BSTNode *, int>> stack;
+    stack.push_back(std::make_pair(pRoot, 0));
+    while (!stack.empty()) {
+        BSTNode *curNode = stack.back().first;
+        int times = stack.back().second;
+        stack.pop_back();
+        if (times == 0) {
+            stack.push_back(std::make_pair(curNode, 1));
+            if (curNode->pRight) {
+                stack.push_back(std::make_pair(curNode->pRight, 0));
+            }
+            if (curNode->pLeft) {
+                stack.push_back(std::make_pair(curNode->pLeft, 0));
+            }
+        } else {
+            visit(curNode->value);
+        }
+    }
+}
 
 void testBinarySearchTree() {
     BinarySearchTree t;
     std::vector<int> nodeValues({2, 5, 2, 4, 6, 8, 9, 3, 4, 6, 8, 9, 3, 34, 45, 6, 34, 3, 56});
     std::for_each(nodeValues.begin(), nodeValues.end(), [&t](int i) { t.insertNode(i); });
     std::for_each(nodeValues.begin(), nodeValues.end(), [&t](int i) { t.deleteNode(i); });
+    std::for_each(nodeValues.begin(), nodeValues.end(), [&t](int i) { t.insertNode(i); });
+    t.inOrder(visitNode);
+    std::cout << std::endl;
+    t.preOrder(visitNode);
+    std::cout << std::endl;
+    t.postOrder(visitNode);
+    std::cout << std::endl;
 }
 
 int main() {
