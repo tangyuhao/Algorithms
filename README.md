@@ -44,3 +44,7 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
     - postOrder/inOrder/preOrder traverse
     - generate postOrder acording to inOrder and preOrder
     - get all possible parentheses give pairs of parentheses
+- AVLTree (balanced tree, all operation has time complexity of O(logN))
+  - rotate algorithm: single left, single right, double RL, double LR
+  - insert
+  - delete

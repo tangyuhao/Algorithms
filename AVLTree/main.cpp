@@ -5,13 +5,14 @@
 template<class T>
 class TreeNode {
 public:
-    TreeNode(T value) : value(value), height(1), pLeft(NULL), pRight(NULL) {};
+    TreeNode(T value) : value(value), height(1), freq(1), pLeft(NULL), pRight(NULL) {};
 
     friend class AVLTree;
 
 private:
     T value;
     int height;
+    int freq;
     TreeNode<T> *pLeft;
     TreeNode<T> *pRight;
 };
@@ -28,6 +29,8 @@ private:
             delete node;
         }
     }
+
+    void insertNode(TreeNode<T> *node, T value);
 
 public:
     AVLTree() {
@@ -49,6 +52,11 @@ public:
     void doubleRotateLR(TreeNode<T> *&k3);
 
     void doubleRotateRL(TreeNode<T> *&k3);
+
+    void insert(T value) {
+        insertNode(pRoot, value);
+    }
+
 };
 
 template<class T>
@@ -81,4 +89,31 @@ template<class T>
 void AVLTree<T>::doubleRotateRL(TreeNode<T> *&k3) {
     singleRotateLeft(k3->pRight);
     singleRotateRight(k3);
+}
+
+template<class T>
+void AVLTree<T>::insertNode(TreeNode<T> *node, T value) {
+    if (node == NULL) {
+        node = new TreeNode<T>(value);
+        return;
+    }
+    if (node->value > value) {
+        insertNode(node->pLeft, value);
+        if (2 == getHeight(node->pLeft) - getHeight(node->pRight)) {
+            if (value < node->pLeft->value)
+                singleRotateLeft(node);
+            else
+                doubleRotateLR(node);
+        }
+    } else if (node->value < value) {
+        insertNode(node->pRight, value);
+        if (2 == getHeight(node->pRight) - getHeight(node->pLeft)) {
+            if (value > node->pRight->value)
+                singleRotateRight(node);
+            else
+                doubleRotateRL(node);
+        }
+    } else
+        ++(node->freq);
+    node->height = std::max(getHeight(node->pLeft), getHeight(node->pRight)) + 1;
 }
