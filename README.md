@@ -43,3 +43,4 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
     - find/insert/delete
     - postOrder/inOrder/preOrder traverse
     - generate postOrder acording to inOrder and preOrder
+    - get all possible parentheses give pairs of parentheses

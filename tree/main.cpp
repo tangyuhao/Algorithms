@@ -290,8 +290,43 @@ void testBinarySearchTree() {
     std::for_each(postOrder.begin(), postOrder.end(), [](int i) { std::cout << i << " "; });
 }
 
+/*
+ * Every parentheses string can be divided into A(B)
+ * use dynamic programming to solve this problem
+ */
+std::vector<std::string> allParentheses(int n) {
+    if (n == 0) {
+        return std::vector<std::string>(1, "");
+    }
+    if (n == 1) {
+        return std::vector<std::string>(1, "()");
+    }
+    std::vector<std::string> prefix, suffix;
+    std::vector<std::string> result;
+    for (int i = 0; i < n; i++) {
+        prefix = allParentheses(i);
+        suffix = allParentheses(n - 1 - i);
+        for (auto it1 = prefix.begin(); it1 < prefix.end(); it1++) {
+            for (auto it2 = suffix.begin(); it2 < suffix.end(); it2++) {
+                std::string str = *it1;
+                str.push_back('(');
+                str += *it2;
+                str.push_back(')');
+                result.push_back(str);
+            }
+        }
+    }
+    return result;
+}
+
+void testAllParentheses() {
+    std::vector<std::string> result = allParentheses(5);
+    int i = 0;
+    std::for_each(result.begin(), result.end(), [&](std::string str) { std::cout << ++i << ":" << str << std::endl; });
+}
+
 int main() {
-    testBinarySearchTree();
+    testAllParentheses();
     return 0;
 }
 
