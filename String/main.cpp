@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <iterator>
+#include <unordered_map>
 
 
 // 循环左移算法， 时间复杂度：O(N), 空间复杂度: O(1)
@@ -331,6 +332,37 @@ int getMinimalPeriod(std::string str) {
     return -1;
 }
 
+/*
+ * get the longest substring which only contains exactly k unique characters
+ */
+int longestSubstringK(std::string str, int k) {
+    int len = str.length();
+    if (len == 0)
+        return 0;
+    std::unordered_map<char, int> hash;
+    int right, left = 0;
+    int mx = 0;
+    for (right = 0; right < len; right++) {
+        if (hash.find(str[right]) == hash.end()) {
+            hash[str[right]] = 1;
+        } else {
+            hash[str[right]]++;
+        }
+        while (left <= right && (int) hash.size() > k) {
+            if (--hash[str[left]] == 0)
+                hash.erase(str[left]);
+            left++;
+        }
+        mx = std::max(right - left + 1, mx);
+    }
+    return mx;
+}
+
+void testLongestSubstringK() {
+    std::string testStr = "abcdefgaaaaaaabcdeeeeeeeffabdsd";
+    std::cout << longestSubstringK(testStr, 5);
+}
+
 void testGetMinimalPeriod() {
     std::cout << getMinimalPeriod("abcdddabcddd");
 }
@@ -390,6 +422,6 @@ void testAllLCS() {
 }
 
 int main() {
-    testGetMinimalPeriod();
+    testLongestSubstringK();
     return 0;
 }

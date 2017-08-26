@@ -11,6 +11,7 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - longest palindromic substring
   - KMP algorithm
   - get the minimal period of a string
+  - get the longest substring which only contains exactly k unique characters
 - list
   - big int add using linkedlist
   - big int production using linkedlist
