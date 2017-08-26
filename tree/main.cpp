@@ -13,9 +13,6 @@ public:
 
 typedef void (*Visit)(int value);
 
-void visitNode(int value) {
-    std::cout << value << " ";
-}
 
 class BinarySearchTree {
 private:
@@ -37,6 +34,8 @@ public:
     void inOrder(Visit visit) const;
 
     void postOrder(Visit visit) const;
+
+    static void inPre2Post(std::vector<int>, std::vector<int>, std::vector<int> &);
 
 private:
     void destory(BSTNode *);
@@ -182,11 +181,11 @@ void BinarySearchTree::preOrder(Visit visit) const {
         BSTNode *node = stack.back();
         stack.pop_back();
         visit(node->value);
-        if (node->pLeft) {
-            stack.push_back(node->pLeft);
-        }
         if (node->pRight) {
             stack.push_back(node->pRight);
+        }
+        if (node->pLeft) {
+            stack.push_back(node->pLeft);
         }
     }
 }
@@ -237,6 +236,36 @@ void BinarySearchTree::postOrder(Visit visit) const {
     }
 }
 
+void BinarySearchTree::inPre2Post(std::vector<int> inOrder, std::vector<int> preOrder, std::vector<int> &postOrder
+) {
+    if (preOrder.size() != inOrder.size() || preOrder.size() == 0) {
+        return;
+    }
+    int len = preOrder.size();
+    if (preOrder.size() == 1) {
+        postOrder.push_back(preOrder[0]);
+        return;
+    }
+    int root = preOrder[0];
+    auto idx = std::find_if(inOrder.begin(), inOrder.end(), [root](int i) { return i == root; });
+    int distance = std::distance(inOrder.begin(), idx);
+    inPre2Post(std::vector<int>(inOrder.begin(), idx),
+               std::vector<int>(preOrder.begin() + 1, preOrder.begin() + distance + 1), postOrder);
+    inPre2Post(std::vector<int>(idx + 1, inOrder.end()),
+               std::vector<int>(preOrder.begin() + distance + 1, preOrder.end()), postOrder);
+    postOrder.push_back(root);
+}
+
+void visitNode(int value) {
+    std::cout << value << " ";
+}
+
+std::vector<int> *tmpVector;
+
+void addToVector(int value) {
+    tmpVector->push_back(value);
+}
+
 void testBinarySearchTree() {
     BinarySearchTree t;
     std::vector<int> nodeValues({2, 5, 2, 4, 6, 8, 9, 3, 4, 6, 8, 9, 3, 34, 45, 6, 34, 3, 56});
@@ -249,6 +278,16 @@ void testBinarySearchTree() {
     std::cout << std::endl;
     t.postOrder(visitNode);
     std::cout << std::endl;
+
+    std::vector<int> inOrder, preOrder, postOrder;
+    tmpVector = &inOrder;
+    Visit visit = addToVector;
+    t.inOrder(visit);
+    tmpVector = &preOrder;
+    t.preOrder(visit);
+
+    BinarySearchTree::inPre2Post(inOrder, preOrder, postOrder);
+    std::for_each(postOrder.begin(), postOrder.end(), [](int i) { std::cout << i << " "; });
 }
 
 int main() {
