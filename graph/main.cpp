@@ -2,6 +2,8 @@
 #include <vector>
 #include <numeric>
 #include <unordered_map>
+#include <list>
+#include <tuple>
 
 class UnionFindSet {
 private:
@@ -75,7 +77,66 @@ void testUnionFindSet() {
     unionFindSet.print();
 }
 
+class Graph {
+private:
+    int num;
+    bool directional;
+    // adjMatrix[i][j] means the arrow from i to j
+    std::vector<std::vector<int>> adjMatrix;
+
+public:
+    Graph(int n, bool directional = true) : num(n), directional(directional) {
+        adjMatrix = std::vector<std::vector<int>>(num);
+        for (int i = 0; i < num; i++) {
+            adjMatrix[i] = std::vector<int>(num);
+        }
+        for (int i = 0; i < num; i++) {
+            for (int j = 0; j < num; j++) {
+                adjMatrix[i][j] = INT_MAX;
+            }
+        }
+    }
+
+    void addLinesNoWeight(const std::vector<std::pair<int, int>> lines) {
+        if (directional) {
+            for (auto i = lines.begin(); i != lines.end(); i++) {
+                adjMatrix[i->first][i->second] = 1;
+            }
+        } else {
+            for (auto i = lines.begin(); i != lines.end(); i++) {
+                adjMatrix[i->first][i->second] = 1;
+                adjMatrix[i->second][i->first] = 1;
+            }
+        }
+    }
+
+    void addLinesWithWeights(const std::vector<std::tuple<int, int, int>> lines) {
+        if (directional) {
+            for (auto i = lines.begin(); i != lines.end(); i++) {
+                adjMatrix[std::get<0>(*i)][std::get<1>(*i)] = std::get<2>(*i);
+            }
+        } else {
+            for (auto i = lines.begin(); i != lines.end(); i++) {
+                adjMatrix[std::get<0>(*i)][std::get<1>(*i)] = std::get<2>(*i);
+                adjMatrix[std::get<1>(*i)][std::get<0>(*i)] = std::get<2>(*i);
+            }
+        }
+    }
+
+
+};
+
+void testGraphInitialize() {
+    Graph graph(4);
+    graph.addLinesNoWeight({{1, 2},
+                            {2, 3},
+                            {0, 3}});
+    graph.addLinesWithWeights({{1, 2, 22},
+                               {2, 3, 2232},
+                               {0, 3, 222}});
+}
+
 int main() {
-    testUnionFindSet();
+    testGraphInitialize();
     return 0;
 }

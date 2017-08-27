@@ -51,3 +51,5 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - delete
 - graph
   - UnionFindSet (with find, make union)
+  - graph class
+    - initializing related functions
