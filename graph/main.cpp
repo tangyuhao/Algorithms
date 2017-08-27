@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <list>
 #include <tuple>
+#include <deque>
 
 class UnionFindSet {
 private:
@@ -77,6 +78,9 @@ void testUnionFindSet() {
     unionFindSet.print();
 }
 
+typedef void (*Visit)(int node);
+
+
 class Graph {
 private:
     int num;
@@ -123,8 +127,42 @@ public:
         }
     }
 
+    void bfs(int start, Visit visit);
 
+    void dfs(int start, Visit visit);
 };
+
+void Graph::bfs(int start, Visit visit) {
+    std::deque<int> queue;
+    std::vector<bool> visited(num, false);
+    queue.push_front(start);
+    while (!queue.empty()) {
+        int curNode = queue.back();
+        queue.pop_back();
+        visit(curNode);
+        visited[curNode] = true;
+        for (int i = 0; i < num; i++) {
+            if (adjMatrix[curNode][i] != INT_MAX && !visited[i])
+                queue.push_front(i);
+        }
+    }
+}
+
+void Graph::dfs(int start, Visit visit) {
+    std::deque<int> stack;
+    std::vector<bool> visited(num, false);
+    stack.push_back(start);
+    while (!stack.empty()) {
+        int curNode = stack.back();
+        stack.pop_back();
+        visit(curNode);
+        visited[curNode] = true;
+        for (int i = 0; i < num; i++) {
+            if (adjMatrix[curNode][i] != INT_MAX && !visited[i])
+                stack.push_back(i);
+        }
+    }
+}
 
 void testGraphInitialize() {
     Graph graph(4);
@@ -136,7 +174,24 @@ void testGraphInitialize() {
                                {0, 3, 222}});
 }
 
+void testDFSandBFS() {
+    Graph graph(10, false);
+    graph.addLinesNoWeight({{1, 2},
+                            {2, 3},
+                            {2, 0},
+                            {4, 6},
+                            {5, 8},
+                            {8, 7},
+                            {7, 9},
+                            {9, 2}});
+    Visit visit = [](int i) {std::cout << i << " ";};
+    graph.bfs(1, visit);
+    std::cout << std::endl;
+    graph.dfs(1, visit);
+}
+
+
 int main() {
-    testGraphInitialize();
+    testDFSandBFS();
     return 0;
 }
