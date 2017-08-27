@@ -49,3 +49,5 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - rotate algorithm: single left, single right, double RL, double LR
   - insert
   - delete
+- graph
+  - UnionFindSet (with find, make union)
