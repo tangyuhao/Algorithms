@@ -54,3 +54,5 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - graph class
     - initializing related functions
     - bfs/dfs
+    - find the cut points of a graph
+    - shortest path using dijkstra algorithm
