@@ -133,9 +133,13 @@ public:
 
     std::vector<bool> findCutPoints(int root);
 
-    void shortestPath_dijkstra(int source, std::vector<int> &shortestLen, std::vector<int> &pre);
+    void shortestPath_Dijkstra(int source, std::vector<int> &shortestLen, std::vector<int> &pre);
 
-    void printShortestPath_dijkstra(int start, int end, std::vector<int> pre, std::vector<int> shortestLen);
+    void printShortestPath_Dijkstra(int start, int end, std::vector<int> pre, std::vector<int> shortestLen);
+
+    void shortestPath_Floyd(std::vector<std::vector<int>> &shortestLen, std::vector<std::vector<int>> &next);
+
+    void printShortestPath_Floyd(std::vector<std::vector<int>> &shortestLen, std::vector<std::vector<int>> &next);
 
 private:
     void _findCutPoints(int curNode, int parent, int root, std::vector<int> dfn, std::vector<int> low, int &cnt,
@@ -206,7 +210,7 @@ void Graph::_findCutPoints(int curNode, int parent, int root, std::vector<int> d
     }
 }
 
-void Graph::shortestPath_dijkstra(int source, std::vector<int> &shortestLen, std::vector<int> &pre) {
+void Graph::shortestPath_Dijkstra(int source, std::vector<int> &shortestLen, std::vector<int> &pre) {
     shortestLen = adjMatrix[source];
     pre = std::vector<int>((unsigned int) num, -1);
     for (int i = 0; i < num; i++) {
@@ -238,7 +242,7 @@ void Graph::shortestPath_dijkstra(int source, std::vector<int> &shortestLen, std
     }
 }
 
-void Graph::printShortestPath_dijkstra(int start, int end, std::vector<int> pre, std::vector<int> shortestLen) {
+void Graph::printShortestPath_Dijkstra(int start, int end, std::vector<int> pre, std::vector<int> shortestLen) {
     int len = shortestLen[end];
     int e = end;
     std::vector<int> path;
@@ -252,7 +256,48 @@ void Graph::printShortestPath_dijkstra(int start, int end, std::vector<int> pre,
     std::cout << end << std::endl;
 }
 
-void testGraphShortestPath_dijkstra() {
+void Graph::shortestPath_Floyd(std::vector<std::vector<int>> &shortestLen, std::vector<std::vector<int>> &next) {
+    shortestLen = adjMatrix;
+    next = std::vector<std::vector<int>>((unsigned int) num, std::vector<int>((unsigned int) num));
+    for (int i = 0; i < num; i++) {
+        for (int j = 0; j < num; j++) {
+            next[i][j] = j;
+        }
+    }
+    for (int k = 0; k < num; k++) {
+        for (int i = 0; i < num; i++) {
+            for (int j = 0; j < num; j++) {
+                if (shortestLen[i][k] == INT_MAX || shortestLen[k][j] == INT_MAX)
+                    continue;
+                if (shortestLen[i][j] > shortestLen[i][k] + shortestLen[k][j]) {
+                    shortestLen[i][j] = shortestLen[i][k] + shortestLen[k][j];
+                    next[i][j] = next[i][k];
+                }
+            }
+        }
+    }
+}
+
+void Graph::printShortestPath_Floyd(std::vector<std::vector<int>> &shortestLen, std::vector<std::vector<int>> &next) {
+    for (int start = 0; start < num; start++) {
+        for (int end = 0; end < num; end++) {
+            if (start == end || shortestLen[start][end] == INT_MAX) continue;
+            int len = shortestLen[start][end];
+            int s = start;
+            std::vector<int> path;
+            while (s != end) {
+                s = next[s][end];
+                path.push_back(s);
+            }
+            std::cout << start << " to " << end << ": " << len << " ";
+            std::cout << start;
+            std::for_each(path.begin(), path.end(), [](int i) { std::cout << " -> " << i; });
+            std::cout << std::endl;
+        }
+    }
+}
+
+void testGraphShortestPath() {
     Graph graph(9);
     graph.addLinesWithWeights({{1, 6, 24},
                                {1, 5, 70},
@@ -272,9 +317,13 @@ void testGraphShortestPath_dijkstra() {
                                {7, 8, 66}
                               });
     std::vector<int> shortestLen, pre;
-    graph.shortestPath_dijkstra(1, shortestLen, pre);
+    graph.shortestPath_Dijkstra(1, shortestLen, pre);
     for (int i = 2; i < 9; i++)
-        graph.printShortestPath_dijkstra(1, i, pre, shortestLen);
+        graph.printShortestPath_Dijkstra(1, i, pre, shortestLen);
+    std::vector<std::vector<int>> allShortestLen, next;
+    std::cout << std::endl;
+    graph.shortestPath_Floyd(allShortestLen, next);
+    graph.printShortestPath_Floyd(allShortestLen, next);
 }
 
 void testGraphInitialize() {
@@ -305,6 +354,6 @@ void testDFSandBFS() {
 
 
 int main() {
-    testGraphShortestPath_dijkstra();
+    testGraphShortestPath();
     return 0;
 }
