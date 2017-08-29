@@ -141,6 +141,10 @@ public:
 
     void printShortestPath_Floyd(std::vector<std::vector<int>> &shortestLen, std::vector<std::vector<int>> &next);
 
+    void shortestPath_BellmanFord(int start, std::vector<int> &shortestLen, std::vector<int> &pre);
+
+    void printShortestPath_BellmanFord(int start, std::vector<int> shortestLen, std::vector<int> pre);
+
 private:
     void _findCutPoints(int curNode, int parent, int root, std::vector<int> dfn, std::vector<int> low, int &cnt,
                         std::vector<bool> isCutPoint);
@@ -210,6 +214,9 @@ void Graph::_findCutPoints(int curNode, int parent, int root, std::vector<int> d
     }
 }
 
+/*
+ * Cannot deal with the graph with negative weights
+ */
 void Graph::shortestPath_Dijkstra(int source, std::vector<int> &shortestLen, std::vector<int> &pre) {
     shortestLen = adjMatrix[source];
     pre = std::vector<int>((unsigned int) num, -1);
@@ -297,6 +304,45 @@ void Graph::printShortestPath_Floyd(std::vector<std::vector<int>> &shortestLen, 
     }
 }
 
+/*
+ * This algorithm can judge whether the negative cycle exists and it does not have the limitation only applying for
+ * positive weights
+ */
+void Graph::shortestPath_BellmanFord(int start, std::vector<int> &shortestLen, std::vector<int> &pre) {
+    shortestLen = std::vector<int>(num, INT_MAX);
+    pre = std::vector<int>(num, -1);
+    shortestLen[start] = 0;
+    for (int i = 0; i < num - 1; i++) {
+        for (int j = 0; j < num; j++) {
+            for (int k = 0; k < num; k++) {
+                if (adjMatrix[j][k] < INT_MAX && shortestLen[j] < INT_MAX) {
+                    if (shortestLen[k] > shortestLen[j] + adjMatrix[j][k]) {
+                        shortestLen[k] = shortestLen[j] + adjMatrix[j][k];
+                        pre[k] = j;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Graph::printShortestPath_BellmanFord(int start, std::vector<int> shortestLen, std::vector<int> pre) {
+    for (int i = 0; i < num; i++) {
+        if (shortestLen[i] < INT_MAX) {
+            std::vector<int> path;
+            int e = i;
+            while (e != start) {
+                path.push_back(e);
+                e = pre[e];
+            }
+            std::reverse(path.begin(), path.end());
+            std::cout << i << ": " << shortestLen[i] << " " << start;
+            std::for_each(path.begin(), path.end(), [](int k) { std::cout << " -> " << k; });
+            std::cout << std::endl;
+        }
+    }
+}
+
 void testGraphShortestPath() {
     Graph graph(9);
     graph.addLinesWithWeights({{1, 6, 24},
@@ -322,8 +368,14 @@ void testGraphShortestPath() {
         graph.printShortestPath_Dijkstra(1, i, pre, shortestLen);
     std::vector<std::vector<int>> allShortestLen, next;
     std::cout << std::endl;
+
     graph.shortestPath_Floyd(allShortestLen, next);
     graph.printShortestPath_Floyd(allShortestLen, next);
+
+    std::cout << std::endl;
+    std::vector<int> shortestLen_Bellman, pre_Bellman;
+    graph.shortestPath_BellmanFord(1, shortestLen_Bellman, pre_Bellman);
+    graph.printShortestPath_BellmanFord(1, shortestLen_Bellman, pre_Bellman);
 }
 
 void testGraphInitialize() {
