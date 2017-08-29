@@ -59,4 +59,5 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
     - shortest path using Floyd algorithm
     - shortest path using BellmanFord algorithm
     - MST with Prim algorithm
+    - MST with Kruskal algorithm
 

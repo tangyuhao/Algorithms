@@ -41,7 +41,7 @@ int UnionFindSet::find(int i) {
         }
     }
     std::for_each(visitedNodes.begin(), visitedNodes.end(), [&](std::pair<int, int> p) {
-        visitedNodes[p.first] = curNode;
+        parents[p.first] = curNode;
     });
     return curNode;
 }
@@ -188,6 +188,8 @@ public:
     void printShortestPath_BellmanFord(int start, std::vector<int> shortestLen, std::vector<int> pre);
 
     bool MST_Prim(std::vector<Edge> &result);
+
+    void MST_Kruskal(std::vector<Edge> &result);
 
 private:
     void _findCutPoints(int curNode, int parent, int root, std::vector<int> dfn, std::vector<int> low, int &cnt,
@@ -404,6 +406,33 @@ bool Graph::MST_Prim(std::vector<Edge> &result) {
     return true;
 }
 
+/*
+ * Time Complexity = O(ElogE)
+ */
+void Graph::MST_Kruskal(std::vector<Edge> &result) {
+    std::vector<Edge> edge;
+    for (int i = 0; i < num; i++) {
+        for (int j = 1; j < num; j++) {
+            if (adjMatrix[i][j] != INT_MAX)
+                edge.push_back(Edge(i, j, adjMatrix[i][j]));
+        }
+    }
+    std::sort(edge.begin(), edge.end());
+    UnionFindSet s(num);
+    int edgeSize = edge.size();
+    int k = 0;
+    for (int i = 0; i < edgeSize; i++) {
+        int ri = s.find(edge[i].i);
+        int rj = s.find(edge[i].j);
+        if (ri == rj) continue;
+        s.makeUnion(edge[i].i, edge[i].j);
+        result.push_back(edge[i]);
+        k++;
+        if (k == num - 1)
+            break;
+    }
+}
+
 void testGraphMST_Prim() {
     Graph graph(6, false);
     graph.addLinesWithWeights({{0, 1, 10},
@@ -418,6 +447,24 @@ void testGraphMST_Prim() {
                                {2, 5, 15}});
     std::vector<Edge> result;
     bool suc = graph.MST_Prim(result);
+    std::for_each(result.begin(), result.end(),
+                  [](Edge e) { std::cout << "(" << e.i + 1 << ", " << e.j + 1 << "): " << e.weight << std::endl; });
+}
+
+void testGraphMST_Kruskal() {
+    Graph graph(6, false);
+    graph.addLinesWithWeights({{0, 1, 10},
+                               {0, 4, 45},
+                               {0, 3, 30},
+                               {3, 5, 20},
+                               {1, 5, 25},
+                               {1, 4, 40},
+                               {4, 5, 55},
+                               {2, 4, 35},
+                               {1, 2, 50},
+                               {2, 5, 15}});
+    std::vector<Edge> result;
+    graph.MST_Kruskal(result);
     std::for_each(result.begin(), result.end(),
                   [](Edge e) { std::cout << "(" << e.i + 1 << ", " << e.j + 1 << "): " << e.weight << std::endl; });
 }
@@ -485,6 +532,6 @@ void testDFSandBFS() {
 
 
 int main() {
-    testGraphMST_Prim();
+    testGraphMST_Kruskal();
     return 0;
 }
