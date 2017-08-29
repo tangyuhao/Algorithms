@@ -29,6 +29,7 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
     - version 1: using stack
     - version 2: using only one int variable
   - convert Nifix expression to reverse polish notation
+  - whether the stack input and output order is possible
 - array
   - find the definite mode in an array
   - find the local maximum in an array, Time Complexity:O(logN)

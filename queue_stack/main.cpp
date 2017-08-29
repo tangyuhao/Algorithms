@@ -300,7 +300,37 @@ void testConvertNifix2Polish() {
     convertNifix2Polish(str, size);
 }
 
+/*
+ * Given two string with same size, one is the order of characters pushing to the stack, another is the order of
+ * characters popping out.
+ *
+ * return whether it is possible to have these two orders
+ */
+bool stackOrder(std::string inputOrder, std::string outputOrder) {
+    if (inputOrder.size() != outputOrder.size())
+        return false;
+    int size = inputOrder.size();
+    std::stack<char> s;
+    int i = 0, j = 0; // i: index for inputOrder, j: index for outputOrder
+    while (j < size) {
+        if (!s.empty() && s.top() == outputOrder[j]) {
+            s.pop();
+            j++;
+        } else {
+            if (i == size)
+                return false;
+            s.push(inputOrder[i++]);
+        }
+    }
+    return true;
+}
+
+void testStackOrder() {
+    std::cout << stackOrder("ABCDEFG", "BAEDFGC") << std::endl;
+    std::cout << stackOrder("ABCD", "BDAC");
+}
+
 int main() {
-    testConvertNifix2Polish();
+    testStackOrder();
     return 0;
 }
