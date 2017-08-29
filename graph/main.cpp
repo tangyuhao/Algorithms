@@ -395,8 +395,7 @@ bool Graph::MST_Prim(std::vector<Edge> &result) {
     for (int i = 1; i < num; i++) {
         if (e.empty())
             return false;
-        Edge addedEdge = *std::min_element(e.begin(), e.end(),
-                                           [](const Edge a, const Edge b) { return (a.weight < b.weight); });
+        Edge addedEdge = *std::min_element(e.begin(), e.end());
         result.push_back(addedEdge);
         visited[addedEdge.j] = true;
         Edge::deleteEdgeToNode(addedEdge.j, visited, e, adjMatrix);
