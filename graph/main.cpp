@@ -81,6 +81,48 @@ void testUnionFindSet() {
 typedef void (*Visit)(int node);
 
 
+class Edge {
+public:
+    int i, j;
+    int weight;
+
+    Edge(int i, int j, int weight) : i(i), j(j), weight(weight) {};
+
+    bool operator<(const Edge &e) const {
+        return this->weight < e.weight;
+    }
+
+
+    bool operator==(const Edge &e) const {
+        if (this->i == e.i && this->j == e.j)
+            return true;
+        else
+            return false;
+    }
+
+    static void addEdgeFromNode(int from, std::vector<bool> visited, std::vector<Edge> &e,
+                                std::vector<std::vector<int>> adjMatrix) {
+        int size = adjMatrix.size();
+        for (int i = 0; i < size; i++) {
+            if (adjMatrix[from][i] < INT_MAX && !visited[i]) {
+                e.push_back(Edge(from, i, adjMatrix[from][i]));
+            }
+        }
+    }
+
+    static void deleteEdgeToNode(int to, std::vector<bool> visited, std::vector<Edge> &e,
+                                 std::vector<std::vector<int>> adjMatrix) {
+        int size = adjMatrix.size();
+        auto iter = e.begin();
+        while (iter != e.end()) {
+            if (iter->j == to)
+                iter = e.erase(iter);
+            else
+                iter++;
+        }
+    }
+};
+
 class Graph {
 private:
     int num;
@@ -144,6 +186,8 @@ public:
     void shortestPath_BellmanFord(int start, std::vector<int> &shortestLen, std::vector<int> &pre);
 
     void printShortestPath_BellmanFord(int start, std::vector<int> shortestLen, std::vector<int> pre);
+
+    bool MST_Prim(std::vector<Edge> &result);
 
 private:
     void _findCutPoints(int curNode, int parent, int root, std::vector<int> dfn, std::vector<int> low, int &cnt,
@@ -343,6 +387,42 @@ void Graph::printShortestPath_BellmanFord(int start, std::vector<int> shortestLe
     }
 }
 
+bool Graph::MST_Prim(std::vector<Edge> &result) {
+    std::vector<Edge> e;
+    std::vector<bool> visited(num, false);
+    visited[0] = true;
+    Edge::addEdgeFromNode(0, visited, e, adjMatrix);
+    for (int i = 1; i < num; i++) {
+        if (e.empty())
+            return false;
+        Edge addedEdge = *std::min_element(e.begin(), e.end(),
+                                           [](const Edge a, const Edge b) { return (a.weight < b.weight); });
+        result.push_back(addedEdge);
+        visited[addedEdge.j] = true;
+        Edge::deleteEdgeToNode(addedEdge.j, visited, e, adjMatrix);
+        Edge::addEdgeFromNode(addedEdge.j, visited, e, adjMatrix);
+    }
+    return true;
+}
+
+void testGraphMST_Prim() {
+    Graph graph(6, false);
+    graph.addLinesWithWeights({{0, 1, 10},
+                               {0, 4, 45},
+                               {0, 3, 30},
+                               {3, 5, 20},
+                               {1, 5, 25},
+                               {1, 4, 40},
+                               {4, 5, 55},
+                               {2, 4, 35},
+                               {1, 2, 50},
+                               {2, 5, 15}});
+    std::vector<Edge> result;
+    bool suc = graph.MST_Prim(result);
+    std::for_each(result.begin(), result.end(),
+                  [](Edge e) { std::cout << "(" << e.i + 1 << ", " << e.j + 1 << "): " << e.weight << std::endl; });
+}
+
 void testGraphShortestPath() {
     Graph graph(9);
     graph.addLinesWithWeights({{1, 6, 24},
@@ -406,6 +486,6 @@ void testDFSandBFS() {
 
 
 int main() {
-    testGraphShortestPath();
+    testGraphMST_Prim();
     return 0;
 }
