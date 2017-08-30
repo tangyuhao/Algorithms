@@ -448,7 +448,7 @@ bool isNeighbor(std::string m, std::string n) {
 }
 
 std::vector<std::string> findWordLadderPath(std::string start, std::string end,
-                                          std::unordered_map<std::string, std::vector<std::string>> neighborMap) {
+                                            std::unordered_map<std::string, std::vector<std::string>> neighborMap) {
     std::stack<std::string> s;
     std::vector<std::string> list;
     s.push(start);
@@ -462,12 +462,8 @@ std::vector<std::string> findWordLadderPath(std::string start, std::string end,
             list.pop_back();
             continue;
         }
-        int i = neighborMap[cur].size();
         std::vector<std::string> tmp = neighborMap[cur];
-//        for (auto it = neighborMap[cur].begin(); it != neighborMap[cur].end(); it++) {
-//            s.push(*it);
-//        }
-        std::for_each(tmp.begin(), tmp.end(), [&](std::string str) {s.push(str);});
+        std::for_each(tmp.begin(), tmp.end(), [&](std::string str) { s.push(str); });
     }
 
 }
@@ -512,7 +508,7 @@ void testWordLadder() {
     std::set<std::string> dict = {"hot", "dot", "dog", "lot", "log"};
     std::vector<std::string> path;
     std::cout << wordLadder("hit", "cog", dict, path) << std::endl;
-    std::for_each(path.begin(), path.end(), [](std::string str) {std::cout << str << " ";});
+    std::for_each(path.begin(), path.end(), [](std::string str) { std::cout << str << " "; });
 }
 
 void testGraphMST_Prim() {
