@@ -5,6 +5,7 @@
 #include <list>
 #include <tuple>
 #include <deque>
+#include <set>
 
 class UnionFindSet {
 private:
@@ -433,6 +434,52 @@ void Graph::MST_Kruskal(std::vector<Edge> &result) {
     }
 }
 
+bool isNeighbor(std::string m, std::string n) {
+    if (m.length() != n.length())
+        return false;
+    int len = m.length();
+    int cntDiff = 0;
+    for (int i = 0; i < len; i++) {
+        if (m[i] != n[i])
+            cntDiff++;
+    }
+    return cntDiff == 1;
+}
+
+int wordLetter(std::string start, std::string end, std::set<std::string> dict) {
+    std::deque<std::string> q;
+    std::list<std::string> result;
+    if (start == end)
+        return 0;
+    q.push_front(start);
+    int depth = 1;
+    int children = 1;
+    while (!q.empty()) {
+        std::string &cur = q.back();
+        q.pop_back();
+        if (isNeighbor(cur, end)) {
+            return depth;
+        }
+        if (--children == 0) {
+            for (auto it = dict.begin(); it != dict.end();) {
+                if (isNeighbor(*it, cur)) {
+                    q.push_front(*it);
+                    it = dict.erase(it);
+                    children++;
+                } else
+                    it++;
+            }
+            depth++;
+        }
+    }
+    return -1;
+}
+
+void testWordLetter() {
+    std::set<std::string> dict = {"hot", "dot", "dog", "lot", "log"};
+    std::cout << wordLetter("hit", "cog", dict);
+}
+
 void testGraphMST_Prim() {
     Graph graph(6, false);
     graph.addLinesWithWeights({{0, 1, 10},
@@ -532,6 +579,6 @@ void testDFSandBFS() {
 
 
 int main() {
-    testGraphMST_Kruskal();
+    testWordLetter();
     return 0;
 }
