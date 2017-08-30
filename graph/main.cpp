@@ -6,6 +6,7 @@
 #include <tuple>
 #include <deque>
 #include <set>
+#include <stack>
 
 class UnionFindSet {
 private:
@@ -446,38 +447,72 @@ bool isNeighbor(std::string m, std::string n) {
     return cntDiff == 1;
 }
 
-int wordLetter(std::string start, std::string end, std::set<std::string> dict) {
+std::vector<std::string> findWordLadderPath(std::string start, std::string end,
+                                          std::unordered_map<std::string, std::vector<std::string>> neighborMap) {
+    std::stack<std::string> s;
+    std::vector<std::string> list;
+    s.push(start);
+    while (!s.empty()) {
+        std::string &cur = s.top();
+        s.pop();
+        list.push_back(cur);
+        if (cur == end)
+            return list;
+        if (neighborMap[cur].empty()) {
+            list.pop_back();
+            continue;
+        }
+        int i = neighborMap[cur].size();
+        std::vector<std::string> tmp = neighborMap[cur];
+//        for (auto it = neighborMap[cur].begin(); it != neighborMap[cur].end(); it++) {
+//            s.push(*it);
+//        }
+        std::for_each(tmp.begin(), tmp.end(), [&](std::string str) {s.push(str);});
+    }
+
+}
+
+int wordLadder(std::string start, std::string end, std::set<std::string> dict, std::vector<std::string> &path) {
     std::deque<std::string> q;
     std::list<std::string> result;
+    std::unordered_map<std::string, std::vector<std::string>> neighborMap;
     if (start == end)
         return 0;
     q.push_front(start);
     int depth = 1;
     int children = 1;
+    std::vector<std::string> childrenList;
     while (!q.empty()) {
         std::string &cur = q.back();
         q.pop_back();
         if (isNeighbor(cur, end)) {
+            neighborMap[cur] = std::vector<std::string>({end});
+            path = findWordLadderPath(start, end, neighborMap);
             return depth;
         }
         if (--children == 0) {
             for (auto it = dict.begin(); it != dict.end();) {
                 if (isNeighbor(*it, cur)) {
                     q.push_front(*it);
+                    childrenList.push_back(*it);
                     it = dict.erase(it);
                     children++;
                 } else
                     it++;
             }
+            neighborMap[cur] = childrenList;
+            childrenList.clear();
             depth++;
         }
     }
     return -1;
 }
 
-void testWordLetter() {
+void testWordLadder() {
     std::set<std::string> dict = {"hot", "dot", "dog", "lot", "log"};
-    std::cout << wordLetter("hit", "cog", dict);
+    std::vector<std::string> path;
+    std::cout << wordLadder("hit", "cog", dict, path) << std::endl;
+    std::for_each(path.begin(), path.end(), [](std::string str) {std::cout << str << " ";});
 }
 
 void testGraphMST_Prim() {
@@ -579,6 +614,6 @@ void testDFSandBFS() {
 
 
 int main() {
-    testWordLetter();
+    testWordLadder();
     return 0;
 }
