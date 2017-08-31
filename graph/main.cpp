@@ -504,6 +504,72 @@ int wordLadder(std::string start, std::string end, std::set<std::string> dict, s
     return -1;
 }
 
+void BFS_Filling(std::vector<std::vector<char>> &graph, int x, int y) {
+    std::deque<std::pair<int, int>> q; // pair of (x,y)
+    int size_x = graph[0].size();
+    int size_y = graph.size();
+    q.push_front(std::make_pair(y, x));
+    while (!q.empty()) {
+        std::pair<int, int> &pos = q.back();
+        q.pop_back();
+        int curY = pos.first;
+        int curX = pos.second;
+        graph[curY][curX] = 'Y';
+        if (curX != size_x - 1 && graph[curY][curX + 1] == 'O') {
+            q.push_front(std::make_pair(curY, curX + 1));
+        }
+        if (curY != size_y - 1 && graph[curY + 1][curX] == 'O') {
+            q.push_front(std::make_pair(curY + 1, curX));
+        }
+        if (curX != 0 && graph[curY][curX - 1] == 'O') {
+            q.push_front(std::make_pair(curY, curX - 1));
+        }
+        if (curY != 0 && graph[curY - 1][curX] == 'O') {
+            q.push_front(std::make_pair(curY - 1, curX));
+        }
+    }
+}
+
+/*
+ * The graph is using 'X' and 'O' to represent earth and lake respectively, this function is to find the lakes inside
+ * the map and fill them with 'X'
+ */
+void surroundedRegion(std::vector<std::vector<char>> &graph) {
+    int x, y;
+    int size_x = graph[0].size();
+    int size_y = graph.size();
+
+    for (x = 0; x < size_x - 1; x++) {
+        if (graph[0][x] == 'O')
+            BFS_Filling(graph, x, 0);
+        if (graph[size_y - 1][x] == 'O')
+            BFS_Filling(graph, x, size_y - 1);
+    }
+    for (y = 0; y < size_y - 1; y++) {
+        if (graph[y][0] == 'O')
+            BFS_Filling(graph, 0, y);
+        if (graph[y][size_x - 1] == 'O')
+            BFS_Filling(graph, size_x - 1, y);
+    }
+
+    for (x = 0; x < size_x; x++) {
+        for (y = 0; y < size_y; y++) {
+            if (graph[y][x] == 'O')
+                graph[y][x] = 'X';
+            else if (graph[y][x] == 'Y')
+                graph[y][x] = 'O';
+        }
+    }
+}
+
+void testSurroundedRegion() {
+    std::vector<std::vector<char>> graph = {{'X', 'X', 'X', 'X'},
+                                            {'X', 'O', 'O', 'X'},
+                                            {'X', 'X', 'O', 'X'},
+                                            {'X', 'O', 'X', 'X'}};
+    surroundedRegion(graph);
+}
+
 void testWordLadder() {
     std::set<std::string> dict = {"hot", "dot", "dog", "lot", "log"};
     std::vector<std::string> path;
@@ -610,6 +676,6 @@ void testDFSandBFS() {
 
 
 int main() {
-    testWordLadder();
+    testSurroundedRegion();
     return 0;
 }
