@@ -49,9 +49,7 @@ void NQueen::_calcNQueen(std::vector<int> &path, int row) {
 }
 
 int NQueen::getNumOfCases() {
-    int i = 0;
-    std::for_each(paths.begin(), paths.end(), [&](std::vector<int> p) { i++; });
-    return i;
+    return paths.size();
 }
 
 void testNQueen() {
@@ -60,7 +58,62 @@ void testNQueen() {
     std::cout << queen.getNumOfCases() << std::endl;
 }
 
+/*
+ * The array s is a 9 * 9 array, all unfilled places are marked as '0', others are pre-filled blocks (with 1 to 9)
+ */
+bool sodoku(std::vector<std::vector<int>> &s) {
+    int bias_i[] = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
+    int bias_j[] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            if (s[i][j] == 0) {
+                // find the possible number for this (i,j)
+                int ci = i / 3 * 3 + 1;
+                int cj = j / 3 * 3 + 1;
+                std::vector<bool> occupy(9, false);
+                for (int k = 0; k < 9; k++)
+                    if (s[i][k] != 0)
+                        occupy[s[i][k] - 1] = true;
+                for (int k = 0; k < 9; k++)
+                    if (s[k][j] != 0)
+                        occupy[s[k][j] - 1] = true;
+                for (int k = 0; k < 9; k++)
+                    if (s[ci + bias_i[k]][cj + bias_j[k]] != 0)
+                        occupy[s[ci + bias_i[k]][cj + bias_j[k]] - 1] = true;
+                for (int k = 0; k < 9; k++) {
+                    s[i][j] = k + 1;
+                    if (!occupy[k] && sodoku(s)) {
+                        return true;
+                    }
+                    s[i][j] = 0; // recall
+                }
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+void testSodoku() {
+    std::vector<std::vector<int>> chess = {{0, 4, 2, 0, 6, 3, 0, 0, 9},
+                                           {6, 0, 0, 0, 1, 0, 0, 0, 5},
+                                           {3, 0, 0, 0, 2, 0, 4, 8, 0},
+                                           {1, 0, 0, 5, 0, 2, 6, 0, 8},
+                                           {4, 0, 0, 0, 0, 7, 0, 0, 1},
+                                           {9, 0, 5, 6, 0, 0, 0, 0, 7},
+                                           {0, 3, 6, 0, 5, 0, 0, 0, 2},
+                                           {2, 0, 0, 0, 7, 0, 0, 0, 4},
+                                           {7, 0, 0, 2, 9, 0, 8, 5, 0}};
+    bool solve = sodoku(chess);
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            std::cout << chess[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
 int main() {
-    testNQueen();
+    testSodoku();
     return 0;
 }

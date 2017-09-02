@@ -67,4 +67,5 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - suroundedRegion problem
 - chess (problems related to chess or 2-d arrays)
   - N Queen problem
+  - sudoku
 
