@@ -209,11 +209,100 @@ bool traverseChessBoard(std::vector<std::vector<int>> &chess) {
 }
 
 void testTraverseChessBoard() {
-    std::vector<std::vector<int>> chess(8, std::vector<int>(8, -1));
+    int rows = 8, cols = 8;
+    std::vector<std::vector<int>> chess(rows, std::vector<int>(cols, -1));
     chess[0][0] = 0;
     traverseChessBoard(chess);
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            std::cout << chess[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+
+class chessPosition {
+public:
+    int row;
+    int col;
+    int childrenNum;
+
+    chessPosition(int row, int col) : row(row), col(col), childrenNum(0) {};
+};
+
+std::vector<chessPosition> sortNext(std::vector<std::vector<int>> chess,
+                                    std::vector<chessPosition> positions, int steps) {
+    int bias_row[] = {-1, -2, -2, -1, 1, 2, 2, 1};
+    int bias_col[] = {-2, -1, 1, 2, 2, 1, -1, -2};
+    int len = positions.size();
+    int rows = chess.size();
+    int cols = chess[0].size();
+    if (steps == rows * cols - 2)
+        return positions;
+    for (int n = 0; n < len; n++) {
+        for (int k = 0; k < 8; k++) {
+            int i = positions[n].row + bias_row[k];
+            int j = positions[n].col + bias_col[k];
+            if (i >= 0 && i < rows && j >= 0 && j < cols && chess[i][j] == -1) {
+                positions[n].childrenNum++;
+            }
+        }
+    }
+    std::sort(positions.begin(), positions.end(),
+              [](chessPosition pos1, chessPosition pos2) { return pos1.childrenNum < pos2.childrenNum; });
+    positions.erase(std::remove_if(positions.begin(), positions.end(), [](chessPosition p) { return p.childrenNum == 0; }),
+                    positions.end());
+    return positions;
+}
+
+bool _traverseChessBoard2(std::vector<std::vector<int>> &chess, int row, int col, int steps) {
+    int bias_row[] = {-1, -2, -2, -1, 1, 2, 2, 1};
+    int bias_col[] = {-2, -1, 1, 2, 2, 1, -1, -2};
+    int rows = chess.size();
+    int cols = chess.size();
+
+    if (steps == rows * cols - 1) {
+        return true;
+    }
+
+    std::vector<chessPosition> positions;
+    for (int k = 0; k < 8; k++) {
+        int i = row + bias_row[k];
+        int j = col + bias_col[k];
+        if (i >= 0 && i < rows && j >= 0 && j < cols && chess[i][j] == -1) {
+            positions.push_back(chessPosition(i, j));
+        }
+    }
+
+    std::vector<chessPosition> validPositions = sortNext(chess, positions, steps);
+    for (auto it = validPositions.begin(); it != validPositions.end(); it++) {
+        int i = it->row;
+        int j = it->col;
+        chess[i][j] = steps + 1;
+        if (_traverseChessBoard2(chess, i, j, steps + 1)) {
+            return true;
+        }
+        chess[i][j] = -1;
+    }
+    return false;
+}
+
+/*
+ * A game solution, use a knight to traverse all chess board start from the top-left corner
+ * version 2: it is much faster since I have used heuristic search
+ */
+bool traverseChessBoard2(std::vector<std::vector<int>> &chess) {
+    return _traverseChessBoard2(chess, 0, 0, 0);
+}
+
+void testTraverseChessBoard2() {
+    int rows = 8, cols = 8;
+    std::vector<std::vector<int>> chess(rows, std::vector<int>(cols, -1));
+    chess[0][0] = 0;
+    traverseChessBoard2(chess);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
             std::cout << chess[i][j] << " ";
         }
         std::cout << std::endl;
@@ -221,6 +310,6 @@ void testTraverseChessBoard() {
 }
 
 int main() {
-    testTraverseChessBoard();
+    testTraverseChessBoard2();
     return 0;
 }

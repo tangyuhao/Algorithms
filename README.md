@@ -70,4 +70,5 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - sudoku with single solution
   - sudoku with all solutions
   - traverseChessBoard problem
+  - traverseChessBoard problem with heuristic search (much faster)
 
