@@ -95,7 +95,6 @@ bool sodoku(std::vector<std::vector<int>> &s) {
 }
 
 
-
 void testSodoku() {
     std::vector<std::vector<int>> chess = {{0, 4, 2, 0, 6, 3, 0, 0, 9},
                                            {6, 0, 0, 0, 1, 0, 0, 0, 5},
@@ -119,6 +118,7 @@ void testSodoku() {
  * The array s is a 9 * 9 array, all unfilled places are marked as '0', others are pre-filled blocks (with 1 to 9)
  */
 int a = 1;
+
 bool sodokuAll(std::vector<std::vector<int>> &s, std::vector<std::vector<std::vector<int>>> &allSolution) {
     int bias_i[] = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
     int bias_j[] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
@@ -178,7 +178,49 @@ void testSodokuAll() {
     }
 }
 
+bool _traverseChessBoard(std::vector<std::vector<int>> &chess, int row, int col, int steps) {
+    int bias_row[] = {-1, -2, -2, -1, 1, 2, 2, 1};
+    int bias_col[] = {-2, -1, 1, 2, 2, 1, -1, -2};
+    int rows = chess.size();
+    int cols = chess.size();
+    if (steps == rows * cols - 1) {
+        return true;
+    }
+
+    for (int k = 0; k < 8; k++) {
+        int i = row + bias_row[k];
+        int j = col + bias_col[k];
+        if (i >= 0 && i < rows && j >=0 && j < cols && chess[i][j] == -1) {
+            chess[i][j] = steps + 1;
+            if (_traverseChessBoard(chess, i, j, steps + 1)) {
+                return true;
+            }
+            chess[i][j] = -1;
+        }
+    }
+    return false;
+}
+
+/*
+ * A game solution, use a knight to traverse all chess board start from the top-left corner
+ */
+bool traverseChessBoard(std::vector<std::vector<int>> &chess) {
+    return _traverseChessBoard(chess, 0, 0, 0);
+}
+
+void testTraverseChessBoard() {
+    std::vector<std::vector<int>> chess(8, std::vector<int>(8, -1));
+    chess[0][0] = 0;
+    traverseChessBoard(chess);
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            std::cout << chess[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
 int main() {
-    testSodokuAll();
+    testTraverseChessBoard();
     return 0;
 }

@@ -69,4 +69,5 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - N Queen problem
   - sudoku with single solution
   - sudoku with all solutions
+  - traverseChessBoard problem
 
