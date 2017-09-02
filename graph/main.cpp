@@ -562,6 +562,66 @@ void surroundedRegion(std::vector<std::vector<char>> &graph) {
     }
 }
 
+/*
+ * This problem gives 123456789, we have 8 spaces which are allowed to inserted '+', '-' or not
+ * We need to get all possible solutions which allow us to get an expression whose result is 100
+ */
+void hundredProblem(std::vector<std::string> &solution, std::vector<std::vector<std::string>> &allSolution,
+                    int previousResults, int lastNum, std::string lastOperation, int steps) {
+    std::vector<std::string> s = {"+", "-"};
+    if (steps == 8) {
+        if (lastOperation == "")
+            return;
+        int result;
+        if (lastOperation == "+")
+            result = previousResults + lastNum;
+        else
+            result = previousResults - lastNum;
+        if (result == 100)
+            allSolution.push_back(solution);
+        return;
+    }
+    std::string operations[] = {"+", "-", ""};
+    for (int i = 0; i < 3; i++) {
+        int lastNumTmp = lastNum;
+        int previousResultsTmp = previousResults;
+        std::string lastOperationTmp = lastOperation;
+        if (operations[i] == "") {
+            lastNum = lastNum * 10 + steps + 2;
+        } else {
+            if (lastOperation != "") {
+                if (lastOperation == "+")
+                    previousResults = previousResults + lastNum;
+                else
+                    previousResults = previousResults - lastNum;
+            } else {
+                previousResults = lastNum;
+            }
+            lastNum = steps + 2;
+            lastOperation = operations[i];
+        }
+        solution[steps] = operations[i];
+        hundredProblem(solution, allSolution, previousResults, lastNum, lastOperation, steps + 1);
+        lastNum = lastNumTmp;
+        previousResults = previousResultsTmp;
+        lastOperation = lastOperationTmp;
+    }
+
+}
+
+void testHundredProblem() {
+    std::vector<std::vector<std::string>> allSolutions;
+    std::vector<std::string> solution(8);
+    hundredProblem(solution, allSolutions, 0, 1, "", 0);
+    std::for_each(allSolutions.begin(), allSolutions.end(), [](std::vector<std::string> solution) {
+        for (int i = 0; i < 8; i++) {
+            std::cout << i + 1 << solution[i];
+        }
+        std::cout << 9 << std::endl;
+    });
+}
+
+
 void testSurroundedRegion() {
     std::vector<std::vector<char>> graph = {{'X', 'X', 'X', 'X'},
                                             {'X', 'O', 'O', 'X'},
@@ -676,6 +736,6 @@ void testDFSandBFS() {
 
 
 int main() {
-    testSurroundedRegion();
+    testHundredProblem();
     return 0;
 }

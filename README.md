@@ -65,6 +65,7 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
     - calculate the number of steps
     - calculate the path
   - suroundedRegion problem
+  - hundred problem
 - chess (problems related to chess or 2-d arrays)
   - N Queen problem
   - sudoku with single solution
