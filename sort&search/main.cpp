@@ -22,11 +22,15 @@ public:
     void bubbleSort();
 
     /*
-     * Use minHeap
+     * Use maxHeap
      */
     void heapSort() {
         _heapSort(arr, arr.size());
     }
+
+    void quickSort() {
+        _quickSort(arr, 0, arr.size() - 1);
+    };
 
 private:
     void _mergeSort(std::vector<int> &array) {
@@ -46,8 +50,13 @@ private:
 
     void _heapSort(std::vector<int> &a, int k); // the top kth biggest
     void _maxHeap(std::vector<int> &a, int n, int size);
-};
 
+    void _bubbleSort(std::vector<int> &a);
+
+    void _quickSort(std::vector<int> &a, int from, int to);
+
+    int _partition(std::vector<int> &a, int from, int to);
+};
 
 void SortAlgorithms::_maxHeap(std::vector<int> &a, int n, int size) {
     int nChild = 2 * n + 1; // left child
@@ -78,12 +87,16 @@ void SortAlgorithms::_heapSort(std::vector<int> &a, int k) {
 }
 
 void SortAlgorithms::bubbleSort() {
-    int size = (int) arr.size();
+    _bubbleSort(arr);
+}
+
+void SortAlgorithms::_bubbleSort(std::vector<int> &a) {
+    int size = (int) a.size();
     for (int i = 0; i < size - 1; i++) {
         bool bubbled = false;
         for (int j = size - 1; j > i; j--) {
-            if (arr[j] < arr[j - 1]) {
-                std::swap(arr[j], arr[j - 1]);
+            if (a[j] < a[j - 1]) {
+                std::swap(a[j], a[j - 1]);
                 bubbled = true;
             }
         }
@@ -138,6 +151,52 @@ std::vector<int> SortAlgorithms::_merge(std::vector<int> a, std::vector<int> b, 
     return result;
 }
 
+void SortAlgorithms::_quickSort(std::vector<int> &a, int from, int to) {
+    if (from > to)
+        return;
+    if (to - from < 10) { // bubble sort
+        for (int i = from; i < to; i++) {
+            bool bubbled = false;
+            for (int j = to; j > i; j--) {
+                if (a[j] < a[j - 1]) {
+                    bubbled = true;
+                    std::swap(a[j], a[j - 1]);
+                }
+            }
+            if (!bubbled)
+                break;
+        }
+        return;
+    }
+    // choose the pivot
+    int partitionIndex = _partition(a, from, to);
+    _quickSort(a, from, partitionIndex - 1);
+    _quickSort(a, partitionIndex + 1, to);
+}
+
+int SortAlgorithms::_partition(std::vector<int> &a, int from, int to) {
+    int pivot = a[to];
+    int right = to - 1;
+    while (from < right) {
+        while (from < right && a[from] < pivot)
+            from++;
+        while (from < right && pivot <= a[right])
+            right--;
+        std::swap(a[from], a[right]);
+    }
+    if (a[from] >= a[to])
+        std::swap(a[from], a[to]);
+    else
+        from++;
+    return from;
+}
+
+void testQuickSort() {
+    SortAlgorithms algorithms({3, 4, 5, 7, 4, 2, 564, 54, 67, 43, 3, 44, 354, 76, 435, 2, 4, 6, 34, 9, 7, 5, 44, 3});
+    algorithms.quickSort();
+    std::for_each(algorithms.arr.begin(), algorithms.arr.end(), [](int i) { std::cout << i << " "; });
+}
+
 void testMergeSort() {
     SortAlgorithms algorithms({2, 4, 6, 34, 9, 7, 5, 44, 3});
     algorithms.mergeSort();
@@ -190,6 +249,6 @@ void testTwoSum() {
 
 
 int main() {
-    testHeapSort();
+    testQuickSort();
     return 0;
 }
