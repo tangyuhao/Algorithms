@@ -19,6 +19,15 @@ public:
 
     void countingSort();
 
+    void bubbleSort();
+
+    /*
+     * Use minHeap
+     */
+    void heapSort() {
+        _heapSort(arr, arr.size());
+    }
+
 private:
     void _mergeSort(std::vector<int> &array) {
         int len = array.size();
@@ -34,7 +43,54 @@ private:
     }
 
     std::vector<int> _merge(std::vector<int> a, std::vector<int> b, int &count);
+
+    void _heapSort(std::vector<int> &a, int k); // the top kth biggest
+    void _maxHeap(std::vector<int> &a, int n, int size);
 };
+
+
+void SortAlgorithms::_maxHeap(std::vector<int> &a, int n, int size) {
+    int nChild = 2 * n + 1; // left child
+    int t;
+    while (nChild < size) {
+        if (nChild + 1 < size && a[nChild + 1] > a[nChild])
+            nChild++;
+        if (a[nChild] < a[n]) // children are smaller than parent, finished
+            break;
+        std::swap(a[nChild], a[n]);
+        n = nChild;
+        nChild = 2 * n + 1;
+    }
+}
+
+void SortAlgorithms::_heapSort(std::vector<int> &a, int k) {
+    int size = (int) a.size();
+    // make maxheap
+    for (int i = size / 2 - 1; i >= 0; i--) {
+        _maxHeap(a, i, size);
+    }
+    int s = size - k;
+    while (size > s) {
+        std::swap(a[0], a[size - 1]);
+        size--;
+        _maxHeap(a, 0, size);
+    }
+}
+
+void SortAlgorithms::bubbleSort() {
+    int size = (int) arr.size();
+    for (int i = 0; i < size - 1; i++) {
+        bool bubbled = false;
+        for (int j = size - 1; j > i; j--) {
+            if (arr[j] < arr[j - 1]) {
+                std::swap(arr[j], arr[j - 1]);
+                bubbled = true;
+            }
+        }
+        if (!bubbled)
+            break;
+    }
+}
 
 void SortAlgorithms::countingSort() {
     int min = INT_MAX, max = INT_MIN;
@@ -96,6 +152,18 @@ void testCountingSort() {
     std::for_each(algorithms.arr.begin(), algorithms.arr.end(), [](int i) { std::cout << i << " "; });
 }
 
+void testBubbleSort() {
+    SortAlgorithms algorithms({2, 343434, 4, 6, 34, 9, 7, 5, 44, 3});
+    algorithms.bubbleSort();
+    std::for_each(algorithms.arr.begin(), algorithms.arr.end(), [](int i) { std::cout << i << " "; });
+}
+
+void testHeapSort() {
+    SortAlgorithms algorithms({2, 343434, 4, 6, 34, 9, 7, 5, 44, 3});
+    algorithms.heapSort();
+    std::for_each(algorithms.arr.begin(), algorithms.arr.end(), [](int i) { std::cout << i << " "; });
+}
+
 void twoSum(std::vector<int> arr, int sum) {
     SortAlgorithms algorithms(arr);
     algorithms.mergeSort();
@@ -122,6 +190,6 @@ void testTwoSum() {
 
 
 int main() {
-    testCountingSort();
+    testHeapSort();
     return 0;
 }

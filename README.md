@@ -75,5 +75,7 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
 - sort&search
   - merge sort
   - counting sort
+  - heap sort
+  - bubble sort
   - two sum problem
 
