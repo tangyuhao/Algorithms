@@ -72,4 +72,8 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - sudoku with all solutions
   - traverseChessBoard problem
   - traverseChessBoard problem with heuristic search (much faster)
+- sort&search
+  - merge sort
+  - counting sort
+  - two sum problem
 
