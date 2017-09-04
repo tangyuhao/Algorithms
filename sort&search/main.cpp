@@ -217,7 +217,7 @@ int kthBiggest(std::vector<int> &a, int start, int end, int k) {
 }
 
 void testKthBiggest() {
-    std::vector<int> a = {1,2,3,4,5,6,7,8,9,10};
+    std::vector<int> a = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     std::cout << kthBiggest(a, 0, a.size() - 1, 10);
 }
 
@@ -277,8 +277,94 @@ void testTwoSum() {
     twoSum({3, 11, 9, 7, 0, 14, 17, 16}, 20);
 }
 
+/*
+ * Assume the order of a array is ascending
+ */
+inline int binarySearch(int a[], int left, int right, int key) {
+    while (left <= right) {
+        int mid = (left + right) / 2;
+        if (a[mid] > key) {
+            right = mid - 1;
+        } else if (a[mid] < key) {
+            left = mid + 1;
+        } else
+            return mid;
+    }
+    return -1;
+}
+
+inline int findLastLess(int a[], int left, int right, int key) {
+    while (left <= right) {
+        int mid = (left + right) / 2;
+        if (a[mid] < key) {
+            left = mid + 1;
+        } else
+            right = mid - 1;
+    }
+    return right;
+}
+
+inline int findFirstBigger(int a[], int left, int right, int key) {
+    while (left <= right) {
+        int mid = (left + right) / 2;
+        if (a[mid] <= key)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+    return left;
+}
+
+inline int findLastLessEqual(int a[], int left, int right, int key) {
+    while (left <= right) {
+        int mid = (left + right) / 2;
+        if (a[mid] > key)
+            right = mid - 1;
+        else
+            left = mid + 1;
+    }
+    return right;
+}
+
+inline int findFirstBiggerEqual(int a[], int left, int right, int key) {
+    while (left <= right) {
+        int mid = (left + right) / 2;
+        if (a[mid] < key)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+    return left;
+}
+
+inline int findFirstEqual(int a[], int left, int right, int key) {
+    int idx = findFirstBiggerEqual(a, left, right, key);
+    if (idx <= right && a[idx] == key) return idx;
+    return -1;
+}
+
+inline int findLastEqual(int a[], int left, int right, int key) {
+    int idx = findLastLessEqual(a, left, right, key);
+    if (idx >= left && a[idx] == key) return idx;
+    return -1;
+}
+
+void testBinaryFuncitons() {
+    int a[12] = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6};
+    int key = 4;
+    std::cout << "The index of first number bigger than 4 is:" << findFirstBigger(a, 0, 11, key) << std::endl;
+    std::cout << "The index of first number bigger than or equal to 4 is:" << findFirstBiggerEqual(a, 0, 11, key)
+              << std::endl;
+    std::cout << "The index of last number less than 4 is:" << findLastLess(a, 0, 11, key) << std::endl;
+    std::cout << "The index of last number less than or equal to 4 is:" << findLastLessEqual(a, 0, 11, key)
+              << std::endl;
+    std::cout << "The index of last number equal to 4 is:" << findLastEqual(a, 0, 11, key)
+              << std::endl;
+    std::cout << "The index of first number equal to 4 is:" << findFirstEqual(a, 0, 11, key)
+              << std::endl;
+}
 
 int main() {
-    testKthBiggest();
+    testBinaryFuncitons();
     return 0;
 }

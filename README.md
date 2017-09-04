@@ -80,6 +80,7 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - quick sort
   - two sum problem
   - kth biggest number
+  - binary search functions (7 different cases)
 - dynamicProgramming
   - LIS with O(n^2) time complexity
   - LIS with O(nlogn) time complexity

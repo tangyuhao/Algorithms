@@ -79,7 +79,7 @@ int longestIncreasingSubsequence2(std::vector<int> a) {
 }
 
 void testLongestIncreasingSubsequence2() {
-    std::vector<int> a({2, 4, 2, 3, 6, 45, 23, 0, 3, 3, 4, 5, 7, 9});
+    std::vector<int> a({2, 4, 2, 3, 6, 45, 23, 0, 3, 3, 4, 5, 7, 9, 9, 9, 9, 9});
     std::cout << longestIncreasingSubsequence2(a);
 
 }
