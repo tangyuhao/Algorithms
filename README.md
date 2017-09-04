@@ -84,5 +84,6 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
 - dynamicProgramming
   - LIS with O(n^2) time complexity
   - LIS with O(nlogn) time complexity
+  - max profit given stock prices
 
 

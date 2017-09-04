@@ -84,7 +84,62 @@ void testLongestIncreasingSubsequence2() {
 
 }
 
+/*
+ * Given a array of stock prices of different days, we need to figure out the max profit we can get within a max limit of
+ * k deals
+ *
+ * Example: [3,6,2,3,6,7] and k = 2, then the max profit is 6 - 3 + 7 - 2 = 8
+ */
+int maxProfitWithKDeals(std::vector<int> a, int k) {
+    std::vector<std::vector<int>> dp(k + 1, std::vector<int>(a.size()));
+    std::vector<std::vector<int>> pre(k + 1, std::vector<int>(a.size(), -1));
+    int size = (int) a.size();
+    for (int i = 0; i <= k; i++)
+        dp[i][0] = 0;
+    for (int i = 0; i < size; i++)
+        dp[0][i] = 0;
+    for (int i = 1; i <= k; i++) {
+        for (int j = 1; j < size; j++) {
+            int mx = INT_MIN;
+            int buyDay = -1;
+            for (int m = 0; m < j; m++) {
+                if (mx < dp[i - 1][m] + a[j] - a[m]) {
+                    mx = dp[i - 1][m] + a[j] - a[m];
+                    buyDay = m;
+                }
+            }
+            if (dp[i][j - 1] > mx) {
+                dp[i][j] = dp[i][j - 1];
+            } else {
+                dp[i][j] = mx;
+                pre[i][j] = buyDay;
+            }
+        }
+    }
+    int kk = k, ii = size - 1;
+    std::vector<int> buySell;
+    while (dp[kk][ii] > 0) {
+        if (pre[kk][ii] == -1) {
+            ii--;
+            continue;
+        }
+        buySell.push_back(ii);
+        buySell.push_back(pre[kk][ii]);
+        kk--;
+        ii = pre[kk][ii] - 1;
+    }
+    std::reverse(buySell.begin(), buySell.end());
+    std::for_each(buySell.begin(), buySell.end(), [](int k) { std::cout << k << " "; });
+    std::cout << std::endl;
+    return dp[k][size - 1];
+}
+
+void testMaxProfitWithKDeals() {
+    std::vector<int> a = {3, 6, 2, 3, 6, 8};
+    std::cout << maxProfitWithKDeals(a, 2);
+}
+
 int main() {
-    testLongestIncreasingSubsequence2();
+    testMaxProfitWithKDeals();
     return 0;
 }
