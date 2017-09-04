@@ -191,6 +191,36 @@ int SortAlgorithms::_partition(std::vector<int> &a, int from, int to) {
     return from;
 }
 
+int kthBiggest(std::vector<int> &a, int start, int end, int k) {
+    int size = a.size();
+    if (size < k)
+        return INT_MAX; // means it does not exist
+    int pivot = a[end];
+    int left = start, right = end - 1;
+    while (left < right) {
+        while (left < right && a[left] < pivot)
+            left++;
+        while (left < right && a[right] >= pivot)
+            right--;
+        std::swap(a[left], a[right]);
+    }
+    if (a[left] >= pivot)
+        std::swap(a[left], a[end]);
+    else
+        left++;
+    if (end - left == k - 1)
+        return a[left];
+    else if (end - left > k - 1)
+        return kthBiggest(a, left + 1, end, k);
+    else
+        return kthBiggest(a, start, left - 1, k - end + left - 1);
+}
+
+void testKthBiggest() {
+    std::vector<int> a = {1,2,3,4,5,6,7,8,9,10};
+    std::cout << kthBiggest(a, 0, a.size() - 1, 10);
+}
+
 void testQuickSort() {
     SortAlgorithms algorithms({3, 4, 5, 7, 4, 2, 564, 54, 67, 43, 3, 44, 354, 76, 435, 2, 4, 6, 34, 9, 7, 5, 44, 3});
     algorithms.quickSort();
@@ -249,6 +279,6 @@ void testTwoSum() {
 
 
 int main() {
-    testQuickSort();
+    testKthBiggest();
     return 0;
 }
