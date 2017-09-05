@@ -409,7 +409,31 @@ void testLongestSubstringWithoutRepeating() {
     std::cout << longestSubstringWithoutRepeating("aaa");
 }
 
+int jumpProblem(std::vector<int> m) {
+    int size = (int) m.size();
+    int cur = 0;
+    int start = 0;
+    int cnt = 0;
+    while (cur < size - 1) {
+        if (m[cur] <= 0)
+            return -1;
+        int mx = start;
+        for (int i = start; i <= cur; i++) {
+            mx = std::max(mx, m[i] + i);
+        }
+        start = cur + 1;
+        cur = mx;
+        cnt++;
+    }
+    return cnt;
+}
+
+void testJumpProblem() {
+    std::cout << jumpProblem({2, 3, 1, 1, 2, 4, 1, 1, 6, 1, 7}) << std::endl;
+    std::cout << jumpProblem({2, 3, 1, 1, 2}) << std::endl;
+}
+
 int main() {
-    testLongestSubstringWithoutRepeating();
+    testJumpProblem();
     return 0;
 }
