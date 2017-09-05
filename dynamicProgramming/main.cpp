@@ -485,7 +485,29 @@ void testSquareCut() {
     std::cout << *(cuts[n].end() - 1) << "^2" << std::endl;
 }
 
+/*
+ * Average Time complexity: O(nlogn)
+ */
+int maxRectangle(std::vector<int> a, int left, int right) {
+    int size = (int) a.size();
+    if (left == right)
+        return a[left];
+    if (left > right)
+        return 0;
+    auto minIt = std::min_element(a.begin() + left, a.begin() + right + 1);
+    int minIndex = std::distance(a.begin(), minIt);
+    int maxRect = *minIt * (right - left + 1);
+    maxRect = std::max(maxRect, maxRectangle(a, left, minIndex - 1));
+    maxRect = std::max(maxRect, maxRectangle(a, minIndex + 1, right));
+    return maxRect;
+}
+
+void testMaxRectangle() {
+    std::vector<int> a({2, 7, 9, 4, 1});
+    std::cout << maxRectangle(a, 0, a.size() - 1);
+}
+
 int main() {
-    testSquareCut();
+    testMaxRectangle();
     return 0;
 }
