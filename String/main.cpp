@@ -422,6 +422,6 @@ void testAllLCS() {
 }
 
 int main() {
-    testLongestSubstringK();
+    testLongestPalindromicSubStr();
     return 0;
 }

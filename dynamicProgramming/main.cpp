@@ -305,7 +305,39 @@ void testWordBreak() {
     wordBreak("catsanddog", dict);
 }
 
+int matrixMultiply(std::vector<int> dim) {
+    int size = (int) dim.size();
+    if (size < 3)
+        return -1;
+    // the matrix start from 1 to size - 1, the matrix 0 is not valid
+    std::vector<std::vector<int>> results(size, std::vector<int>(size, -1)); // -1 means invalid
+    std::vector<std::vector<int>> cuts(size, std::vector<int>(size, -1)); // record the cutting place
+    for (int i = 1; i < size; i++)
+        results[i][i] = 0;
+    for (int m = 1; m < size - 1; m++) {
+        for (int i = 1; i < size - m; i++) { // i + m < size
+            int j = i + m;
+            int min = INT_MAX;
+            int cut = -1;
+            for (int k = i; k < j; k++) {
+                if (min > results[i][k] + results[k + 1][j] + dim[i - 1] * dim[k] * dim[j]) {
+                    min = results[i][k] + results[k + 1][j] + dim[i - 1] * dim[k] * dim[j];
+                    cut = k;
+                }
+            }
+            results[i][j] = min;
+            cuts[i][j] = cut;
+        }
+    }
+    return results[1][size - 1];
+}
+
+void testMatrixMultiply() {
+    std::vector<int> dims = {3,5,4};
+    std::cout << matrixMultiply(dims);
+}
+
 int main() {
-    testWordBreak();
+    testMatrixMultiply();
     return 0;
 }
