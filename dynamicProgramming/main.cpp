@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include <cmath>
+#include <unordered_map>
 
 /*
  * Version 1: time complexity: O(n^2)
@@ -430,10 +432,60 @@ int jumpProblem(std::vector<int> m) {
 
 void testJumpProblem() {
     std::cout << jumpProblem({2, 3, 1, 1, 2, 4, 1, 1, 6, 1, 7}) << std::endl;
+    std::cout << jumpProblem({2, 3, 1, 1, 0, 0, 1, 1, 6, 1, 7}) << std::endl;
+    std::cout << jumpProblem({2}) << std::endl;
     std::cout << jumpProblem({2, 3, 1, 1, 2}) << std::endl;
 }
 
+inline int isPerfectSquare(int i) {
+    int k = (int) std::sqrt(i);
+    if (i == k * k)
+        return k;
+    else
+        return 0;
+}
+
+int squareCut(int n, std::vector<std::vector<int>> &cuts) {
+    std::vector<int> parts;
+    if (n < 1)
+        return 0;
+    if (int k = isPerfectSquare(n)) {
+        parts.push_back(k);
+        cuts[n] = parts;
+        return 1;
+    }
+    cuts[1] = std::vector<int>(1, 1);
+    for (int nn = 2; nn <= n; nn++) {
+        parts.clear();
+        int k = (int) std::floor(std::sqrt(nn));
+        int min = INT_MAX;
+        int minLeftI = -1;
+        for (int i = 1; i <= k; i++) {
+            int left = i * i;
+            int right = nn - left;
+            int rightCuts = cuts[right].size();
+            if (min > rightCuts + 1) {
+                min = rightCuts + 1;
+                parts = cuts[right];
+                minLeftI = i;
+            }
+        }
+        parts.push_back(minLeftI);
+        cuts[nn] = parts;
+    }
+    return cuts[n].size();
+}
+
+void testSquareCut() {
+    int n = 201314;
+    std::vector<std::vector<int>> cuts(n + 1, std::vector<int>());
+    squareCut(n, cuts);
+    std::cout << n << " = ";
+    std::for_each(cuts[n].begin(), cuts[n].end() - 1, [](int k) { std::cout << k << "^2 + "; });
+    std::cout << *(cuts[n].end() - 1) << "^2" << std::endl;
+}
+
 int main() {
-    testJumpProblem();
+    testSquareCut();
     return 0;
 }
