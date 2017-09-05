@@ -379,7 +379,37 @@ void testSubSequenceAppearTimes() {
     std::cout << subSequenceAppearTimes2("rabbit", "rabbbbbbit");
 }
 
+/*
+ * assume that the characters only range from 'a' to 'z'
+ */
+std::string longestSubstringWithoutRepeating(std::string str) {
+    std::vector<int> last(26, -1);
+    int size = (int) str.size();
+    int start = 0;
+    int mx = -1;
+    std::string substr;
+    for (int i = 0; i < size; i++) {
+        if (last[str[i] - 'a'] >= start) {
+            if (mx < i - start) {
+                mx = i - start;
+                substr = str.substr(start, mx);
+            }
+            start = last[str[i] - 'a'] + 1;
+        }
+        last[str[i] - 'a'] = i;
+    }
+    if (mx < size - start) {
+        substr = str.substr(start, size - start);
+    }
+    return substr;
+}
+
+
+void testLongestSubstringWithoutRepeating() {
+    std::cout << longestSubstringWithoutRepeating("aaa");
+}
+
 int main() {
-    testSubSequenceAppearTimes();
+    testLongestSubstringWithoutRepeating();
     return 0;
 }

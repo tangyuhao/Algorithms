@@ -91,5 +91,6 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - wordBreak problem
   - matrixMultiply min operation problem
   - calculate one pattern's times which appear as a subsequence of a text
+  - Longest Substring Without Repeating Characters
 
 
