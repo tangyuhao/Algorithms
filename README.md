@@ -88,5 +88,6 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - minimum operations problem
   - traverse chess twice with max sum of weight problem
   - test whether a string can be formed by two other strings
+  - wordBreak problem
 
 

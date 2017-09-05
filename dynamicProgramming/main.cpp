@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <stack>
 
 /*
  * Version 1: time complexity: O(n^2)
@@ -250,7 +251,61 @@ void testStringCombination() {
     std::cout << stringCombination("aabcc", "dbbca", "accabdbbca");
 }
 
+void getAllBreaks(const std::vector<std::vector<bool>> &pre, const std::string &str, int cur, std::vector<int> oneBreak,
+                  std::vector<std::string> &answer) {
+    // leaf
+    if (cur == 0) {
+        std::reverse(oneBreak.begin(), oneBreak.end());
+        std::string tmp;
+        int start = 0;
+        for (auto it = oneBreak.begin(); it != oneBreak.end(); it++) {
+            tmp += str.substr(start, *it - start) + " ";
+            start = *it;
+        }
+        tmp.pop_back();
+        answer.push_back(tmp);
+        return;
+    }
+
+    for (int i = cur - 1; i >= 0; i--) {
+        if (pre[cur][i]) {
+            oneBreak.push_back(i);
+            getAllBreaks(pre, str, i, oneBreak, answer);
+            oneBreak.pop_back();
+        }
+    }
+}
+
+int wordBreak(std::string str, std::vector<std::string> dict) {
+    int len = (int) str.length();
+    std::vector<int> dp(len + 1, false);
+    std::vector<std::vector<bool>> pre(len + 1, std::vector<bool>(len, false));
+    std::vector<std::string> answers;
+    dp[0] = true;
+    for (int i = 1; i <= len; i++) {
+        for (int j = i - 1; j >= 0; j--) {
+            if (dp[j] == true && std::find(dict.begin(), dict.end(), str.substr(j, i - j)) != dict.end()) {
+                dp[i] = true;
+                pre[i][j] = true;
+            }
+        }
+    }
+
+    if (dp[len]) {
+        std::vector<int> oneBreak;
+        oneBreak.push_back(len);
+        getAllBreaks(pre, str, len, oneBreak, answers);
+        std::for_each(answers.begin(), answers.end(), [](std::string s) { std::cout << s << std::endl; });
+    }
+    return dp[len];
+}
+
+void testWordBreak() {
+    std::vector<std::string> dict = {"cat", "cats", "and", "sand", "dog"};
+    wordBreak("catsanddog", dict);
+}
+
 int main() {
-    testStringCombination();
+    testWordBreak();
     return 0;
 }
