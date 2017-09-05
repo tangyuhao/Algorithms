@@ -202,7 +202,6 @@ int chessTwiceTraverse(std::vector<std::vector<int>> a) {
                     tmp = std::max(tmp, getValue(dp, step - 1, i, j - 1, rows, cols));
                     tmp = std::max(tmp, getValue(dp, step - 1, i, j, rows, cols));
                     tmp += a[i][step - i] + a[j][step - j];
-                    dp[step][i][j] = tmp;
                 } else {
                     tmp = std::max(tmp, getValue(dp, step - 1, i - 1, j - 1, rows, cols));
                     tmp = std::max(tmp, getValue(dp, step - 1, i - 1, j, rows, cols));
@@ -225,7 +224,33 @@ void testChessTwiceTraverse() {
     std::cout << chessTwiceTraverse(a);
 }
 
+bool stringCombination(std::string str1, std::string str2, std::string str3) {
+    int len1 = str1.length();
+    int len2 = str2.length();
+    int len3 = str3.length();
+    if (len1 + len2 != len3)
+        return false;
+    std::vector<std::vector<bool>> dp(len1 + 1, std::vector<bool>(len2 + 1, false));
+    dp[0][0] = true;
+    for (int i = 1; i <= len1; i++) {
+        dp[i][0] = dp[i - 1][0] && str1[i - 1] == str3[i - 1];
+    }
+    for (int j = 1; j <= len2; j++) {
+        dp[0][j] = dp[0][j - 1] && str2[j - 1] == str3[j - 1];
+    }
+    for (int i = 1; i <= len1; i++) {
+        for (int j = 1; j <= len2; j++) {
+            dp[i][j] = dp[i - 1][j] && str1[i - 1] == str3[i + j - 1] || dp[i][j - 1] && str2[j - 1] == str3[i + j - 1];
+        }
+    }
+    return dp[len1][len2];
+}
+
+void testStringCombination() {
+    std::cout << stringCombination("aabcc", "dbbca", "accabdbbca");
+}
+
 int main() {
-    testChessTwiceTraverse();
+    testStringCombination();
     return 0;
 }
