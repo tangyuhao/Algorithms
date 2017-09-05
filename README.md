@@ -86,5 +86,6 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - LIS with O(nlogn) time complexity
   - max profit given stock prices
   - minimum operations problem
+  - traverse chess twice with max sum of weight problem
 
 

@@ -159,7 +159,73 @@ void testMinChanges() {
     std::cout << minChanges(2015, times);
 }
 
+inline bool testValid(int step, int row1, int row2, int rows, int cols) {
+    int col1 = step - row1;
+    int col2 = step - row2;
+    return row1 >= 0 && row1 < rows && row2 >= 0 && row2 < rows && col1 >= 0 && col1 < cols && col2 >= 0 && col2 < cols;
+}
+
+inline int getValue(const std::vector<std::vector<std::vector<int>>> &dp,
+                    int step, int row1, int row2, int rows, int cols) {
+    return testValid(step, row1, row2, rows, cols) ? dp[step][row1][row2] : INT_MIN;
+
+}
+
+/*
+ * The number in array a is weight, we need to find a path from the left-top corner to right-bottom corner and then go
+ * back which is has the max sum of weights
+ *
+ * Note: if a placed is passed twice, only one time the weight should be calculated
+ *
+ * Definition: define the status of a position (i, j) as i + j so the status of a 3 by 3 array should be:
+ *     0 1 2
+ *     1 2 3
+ *     2 3 4
+ */
+int chessTwiceTraverse(std::vector<std::vector<int>> a) {
+    int rows = (int) a.size();
+    int cols = (int) a[0].size();
+    int steps = rows + cols - 1;
+    std::vector<std::vector<std::vector<int>>> dp(steps,
+                                                  std::vector<std::vector<int>>(rows, std::vector<int>(cols, INT_MIN)));
+    dp[0][0][0] = a[0][0];
+
+    for (int step = 1; step < steps; step++) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = i; j < cols; j++) {
+                if (!testValid(step, i, j, rows, cols))
+                    continue;
+                int tmp = dp[step][i][j];
+                if (i != j) {
+                    tmp = std::max(tmp, getValue(dp, step - 1, i - 1, j - 1, rows, cols));
+                    tmp = std::max(tmp, getValue(dp, step - 1, i - 1, j, rows, cols));
+                    tmp = std::max(tmp, getValue(dp, step - 1, i, j - 1, rows, cols));
+                    tmp = std::max(tmp, getValue(dp, step - 1, i, j, rows, cols));
+                    tmp += a[i][step - i] + a[j][step - j];
+                    dp[step][i][j] = tmp;
+                } else {
+                    tmp = std::max(tmp, getValue(dp, step - 1, i - 1, j - 1, rows, cols));
+                    tmp = std::max(tmp, getValue(dp, step - 1, i - 1, j, rows, cols));
+                    tmp = std::max(tmp, getValue(dp, step - 1, i, j, rows, cols));
+                    tmp += a[i][step - i];
+                }
+                dp[step][i][j] = tmp;
+            }
+        }
+    }
+
+    return dp[steps - 1][rows - 1][cols - 1];
+}
+
+void testChessTwiceTraverse() {
+    std::vector<std::vector<int>> a = {{1, 2, 3, 4},
+                                       {1, 2, 3, 4},
+                                       {1, 2, 3, 4},
+                                       {1, 2, 3, 4}};
+    std::cout << chessTwiceTraverse(a);
+}
+
 int main() {
-    testMinChanges();
+    testChessTwiceTraverse();
     return 0;
 }
