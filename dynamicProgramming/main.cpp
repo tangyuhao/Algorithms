@@ -333,11 +333,53 @@ int matrixMultiply(std::vector<int> dim) {
 }
 
 void testMatrixMultiply() {
-    std::vector<int> dims = {3,5,4};
+    std::vector<int> dims = {3, 5, 4};
     std::cout << matrixMultiply(dims);
 }
 
+int subSequenceAppearTimes(std::string pattern, std::string text) {
+    if (pattern.length() > text.length())
+        return 0;
+    int pSize = (int) pattern.length();
+    int tSize = (int) text.length();
+    std::vector<std::vector<int>> times(pSize + 1, std::vector<int>(tSize + 1, 0));
+    for (int k = 0; k <= tSize; k++)
+        times[0][k] = 1;
+    for (int i = 1; i <= pSize; i++) {
+        for (int j = 1; j <= tSize; j++) {
+            if (pattern[i - 1] != text[j - 1])
+                times[i][j] = times[i][j - 1];
+            else
+                times[i][j] = times[i - 1][j - 1] + times[i][j - 1];
+        }
+    }
+    return times[pSize][tSize];
+}
+
+int subSequenceAppearTimes2(std::string pattern, std::string text) {
+    if (pattern.length() > text.length())
+        return 0;
+    int pSize = (int) pattern.length();
+    int tSize = (int) text.length();
+    std::vector<int> times(pSize + 1, 0);
+    times[0] = 1;
+    for (int j = 1; j <= tSize; j++) {
+        for (int i = pSize; i > 0; i--) {
+            if (pattern[i - 1] != text[j - 1])
+                times[i] = times[i];
+            else
+                times[i] = times[i - 1] + times[i];
+        }
+    }
+    return times[pSize];
+}
+
+void testSubSequenceAppearTimes() {
+    std::cout << subSequenceAppearTimes("rabbit", "rabbbbbbit") << std::endl;
+    std::cout << subSequenceAppearTimes2("rabbit", "rabbbbbbit");
+}
+
 int main() {
-    testMatrixMultiply();
+    testSubSequenceAppearTimes();
     return 0;
 }

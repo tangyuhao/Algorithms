@@ -90,5 +90,6 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - test whether a string can be formed by two other strings
   - wordBreak problem
   - matrixMultiply min operation problem
+  - calculate one pattern's times which appear as a subsequence of a text
 
 
