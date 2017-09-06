@@ -641,19 +641,34 @@ int minPalindromePartitioning(std::string s) {
     std::vector<std::vector<bool>> isPalin(size, std::vector<bool>(size));
     calculatePalindromeSubstring(s, isPalin);
     std::vector<int> dp(size, 0);
+    std::vector<int> pre(size);
+    pre[0] = -1;
     dp[0] = 1;
     for (int i = 1; i < size; i++) {
         if (isPalin[0][i]) {
             dp[i] = 1;
+            pre[i] = -1;
             continue;
         }
         int minSplit = size;
+        int preSplit = i - 1;
         for (int k = 0; k < i; k++) {
-            if (isPalin[k + 1][i] && dp[k] + 1 < minSplit)
+            if (isPalin[k + 1][i] && dp[k] + 1 < minSplit) {
                 minSplit = dp[k] + 1;
+                preSplit = k;
+            }
         }
         dp[i] = minSplit;
+        pre[i] = preSplit;
     }
+    int k = size - 1;
+    std::vector<std::string> result;
+    while (k != -1) {
+        result.push_back(s.substr(pre[k] + 1, k - pre[k]));
+        k = pre[k];
+    }
+    std::for_each(result.rbegin(), result.rend(), [](std::string ss) { std::cout << ss << " "; });
+    std::cout << std::endl;
     return dp[size - 1];
 }
 
