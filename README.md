@@ -98,3 +98,4 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - max rectangle of a 2D-chess
   - charge problem
   - scramble string problem
+  - min Palindrome Partitioning

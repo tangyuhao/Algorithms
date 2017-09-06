@@ -621,7 +621,48 @@ void testScrambleString() {
     std::cout << scrambleString(str1, str2);
 }
 
+void calculatePalindromeSubstring(const std::string &s, std::vector<std::vector<bool>> &isPalin) {
+    int size = (int) s.size();
+    // initialize
+    for (int i = 0; i < size; i++)
+        isPalin[i][i] = true;
+    for (int i = 0; i < size - 1; i++)
+        isPalin[i][i + 1] = (s[i] == s[i + 1]);
+    for (int len = 3; len <= size; len++) {
+        for (int i = 0; i <= size - len; i++) {
+            // substring i to i + len - 1
+            isPalin[i][i + len - 1] = isPalin[i + 1][i + len - 2] && s[i] == s[i + len - 1];
+        }
+    }
+}
+
+int minPalindromePartitioning(std::string s) {
+    int size = (int) s.size();
+    std::vector<std::vector<bool>> isPalin(size, std::vector<bool>(size));
+    calculatePalindromeSubstring(s, isPalin);
+    std::vector<int> dp(size, 0);
+    dp[0] = 1;
+    for (int i = 1; i < size; i++) {
+        if (isPalin[0][i]) {
+            dp[i] = 1;
+            continue;
+        }
+        int minSplit = size;
+        for (int k = 0; k < i; k++) {
+            if (isPalin[k + 1][i] && dp[k] + 1 < minSplit)
+                minSplit = dp[k] + 1;
+        }
+        dp[i] = minSplit;
+    }
+    return dp[size - 1];
+}
+
+void testMinPalindromePartitioning() {
+    std::string s = "abacdccdaa";
+    std::cout << minPalindromePartitioning(s);
+}
+
 int main() {
-    testScrambleString();
+    testMinPalindromePartitioning();
     return 0;
 }
