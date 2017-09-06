@@ -587,7 +587,7 @@ long chargeProblem(std::vector<int> money, int amount) {
                 dp[i][j] = dp[i][j - money[i]] + dp[i - 1][j];
         }
     }
-    return dp[k-1][amount];
+    return dp[k - 1][amount];
 }
 
 void testChargeProblem() {
@@ -596,7 +596,32 @@ void testChargeProblem() {
     std::cout << chargeProblem(money, amount);
 }
 
+bool scrambleString(std::string str1, std::string str2) {
+    int size = (int) str1.size();
+    if (size != str2.size())
+        return false;
+    if (size == 1)
+        return str1 == str2;
+    if (size == 2)
+        return (str1 == str2 || (str1[0] == str2[1] && str1[1] == str2[0]));
+    for (int k = 1; k < size; k++) {
+        if (scrambleString(str1.substr(0, k), str2.substr(0, k)) &&
+            scrambleString(str1.substr(k, size - k), str2.substr(k, size - k)))
+            return true;
+        if (scrambleString(str1.substr(0, k), str2.substr(size - k, k)) &&
+            scrambleString(str1.substr(k, size - k), str2.substr(0, size - k)))
+            return true;
+    }
+    return false;
+}
+
+void testScrambleString() {
+    std::string str1 = "great";
+    std::string str2 = "rgtae";
+    std::cout << scrambleString(str1, str2);
+}
+
 int main() {
-    testChargeProblem();
+    testScrambleString();
     return 0;
 }

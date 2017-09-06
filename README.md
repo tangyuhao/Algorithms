@@ -97,3 +97,4 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - max rectangle of histogram (with O(nlogn) and O(n) two solutions)
   - max rectangle of a 2D-chess
   - charge problem
+  - scramble string problem
