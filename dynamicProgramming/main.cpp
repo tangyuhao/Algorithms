@@ -533,7 +533,42 @@ void testMaxRectangleHistogram2() {
     std::cout << maxRectangleHistogram2(a);
 }
 
+int max2DRectangle(const std::vector<std::vector<int>> &a) {
+    if (a.size() == 0)
+        return -1;
+    if (a[0].size() == 0)
+        return -1;
+    int rows = (int) a.size();
+    int cols = (int) a[0].size();
+    std::vector<int> hist(cols);
+    int maxArea = INT_MIN;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            int ii = i;
+            int height = 0;
+            while (ii >= 0 && a[ii][j] != 0) {
+                ii--;
+                height++;
+            }
+            hist[j] = height;
+        }
+        maxArea = std::max(maxArea, maxRectangleHistogram2(hist));
+    }
+    return maxArea;
+}
+
+void testMax2DRectangle() {
+    std::vector<std::vector<int>> a = {{0, 1, 0, 1, 1, 1, 1, 0, 0},
+                                       {0, 1, 0, 1, 0, 0, 0, 0, 0},
+                                       {0, 1, 1, 1, 1, 1, 1, 0, 0},
+                                       {0, 1, 1, 1, 1, 1, 0, 0, 0},
+                                       {0, 1, 0, 1, 1, 1, 1, 0, 0},
+                                       {0, 1, 0, 1, 0, 1, 1, 0, 0},
+                                       {0, 1, 1, 0, 1, 0, 0, 0, 0}};
+    std::cout << "max rectangle area: " << max2DRectangle(a);
+}
+
 int main() {
-    testMaxRectangleHistogram2();
+    testMax2DRectangle();
     return 0;
 }

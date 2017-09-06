@@ -95,3 +95,4 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - jump Problem
   - square cut problem
   - add max rectangle of histogram (with O(nlogn) and O(n) two solutions)
+  - add max rectangle of a 2D-chess
