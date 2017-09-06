@@ -568,7 +568,35 @@ void testMax2DRectangle() {
     std::cout << "max rectangle area: " << max2DRectangle(a);
 }
 
+long chargeProblem(std::vector<int> money, int amount) {
+    int k = (int) money.size();
+    std::vector<std::vector<long>> dp(k, std::vector<long>(amount + 1));
+    for (int j = 0; j <= amount; j++) {
+        dp[0][j] = 1;
+    }
+    // we assume the money 1 exists
+    // or here we should update the initial state
+    for (int i = 0; i < k; i++) {
+        dp[i][0] = 1;
+    }
+    for (int i = 1; i < k; i++) {
+        for (int j = 1; j <= amount; j++) {
+            if (j < money[i])
+                dp[i][j] = dp[i - 1][j];
+            else
+                dp[i][j] = dp[i][j - money[i]] + dp[i - 1][j];
+        }
+    }
+    return dp[k-1][amount];
+}
+
+void testChargeProblem() {
+    std::vector<int> money = {1, 2, 5, 10, 20, 50, 100};
+    int amount = 1000;
+    std::cout << chargeProblem(money, amount);
+}
+
 int main() {
-    testMax2DRectangle();
+    testChargeProblem();
     return 0;
 }
