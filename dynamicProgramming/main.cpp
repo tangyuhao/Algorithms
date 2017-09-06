@@ -243,7 +243,8 @@ bool stringCombination(std::string str1, std::string str2, std::string str3) {
     }
     for (int i = 1; i <= len1; i++) {
         for (int j = 1; j <= len2; j++) {
-            dp[i][j] = dp[i - 1][j] && str1[i - 1] == str3[i + j - 1] || dp[i][j - 1] && str2[j - 1] == str3[i + j - 1];
+            dp[i][j] = (dp[i - 1][j] && str1[i - 1] == str3[i + j - 1]) ||
+                       (dp[i][j - 1] && str2[j - 1] == str3[i + j - 1]);
         }
     }
     return dp[len1][len2];
@@ -488,7 +489,7 @@ void testSquareCut() {
 /*
  * Average Time complexity: O(nlogn)
  */
-int maxRectangle(std::vector<int> a, int left, int right) {
+int maxRectangleHistogram(std::vector<int> a, int left, int right) {
     int size = (int) a.size();
     if (left == right)
         return a[left];
@@ -497,17 +498,42 @@ int maxRectangle(std::vector<int> a, int left, int right) {
     auto minIt = std::min_element(a.begin() + left, a.begin() + right + 1);
     int minIndex = std::distance(a.begin(), minIt);
     int maxRect = *minIt * (right - left + 1);
-    maxRect = std::max(maxRect, maxRectangle(a, left, minIndex - 1));
-    maxRect = std::max(maxRect, maxRectangle(a, minIndex + 1, right));
+    maxRect = std::max(maxRect, maxRectangleHistogram(a, left, minIndex - 1));
+    maxRect = std::max(maxRect, maxRectangleHistogram(a, minIndex + 1, right));
     return maxRect;
 }
 
-void testMaxRectangle() {
+void testMaxRectangleHistogram() {
     std::vector<int> a({2, 7, 9, 4, 1});
-    std::cout << maxRectangle(a, 0, a.size() - 1);
+    std::cout << maxRectangleHistogram(a, 0, a.size() - 1);
+}
+
+/*
+ * Time Complexity: O(n)
+ */
+int maxRectangleHistogram2(const std::vector<int> &a) {
+    std::stack<int> s;
+    int size = (int) a.size();
+    int maxArea = INT_MIN;
+    for (int i = 0; i < size;) {
+        if (s.empty() || a[i] > a[s.top()]) {
+            s.push(i);
+            i++;
+        } else {
+            int temp = s.top();
+            s.pop();
+            maxArea = std::max(maxArea, a[temp] * (s.empty() ? i : i - s.top() - 1));
+        }
+    }
+    return maxArea;
+}
+
+void testMaxRectangleHistogram2() {
+    std::vector<int> a({2, 7, 9, 4, 1});
+    std::cout << maxRectangleHistogram2(a);
 }
 
 int main() {
-    testMaxRectangle();
+    testMaxRectangleHistogram2();
     return 0;
 }

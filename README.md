@@ -94,4 +94,4 @@ This is a personal practice for algorithms using c++11, I tried my best to not u
   - Longest Substring Without Repeating Characters
   - jump Problem
   - square cut problem
-  - add max rectangle of histogram
+  - add max rectangle of histogram (with O(nlogn) and O(n) two solutions)
