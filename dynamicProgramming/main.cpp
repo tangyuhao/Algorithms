@@ -677,7 +677,49 @@ void testMinPalindromePartitioning() {
     std::cout << minPalindromePartitioning(s);
 }
 
+/*
+ * get all palindrome substring partitions
+ * version 1: use recursion
+ */
+void allPalindromePartitioning(std::string s, int start, int end, const std::vector<std::vector<bool>> &isPalin,
+                               std::vector<std::string> onePartition,
+                               std::vector<std::vector<std::string>> &allPartitions) {
+    // to the end of the string
+    if (end - start == -1) {
+        allPartitions.push_back(onePartition);
+        return;
+    }
+    for (int i = start; i <= end; i++) {
+        if (isPalin[start][i]) {
+            onePartition.push_back(s.substr(start, i - start + 1));
+            allPalindromePartitioning(s, i + 1, end, isPalin, onePartition, allPartitions);
+            onePartition.pop_back();
+        }
+    }
+}
+
+void getAllPalindromePartitioning(std::string s) {
+    int size = (int) s.size();
+    std::vector<std::vector<bool>> isPalin(size, std::vector<bool>(size));
+    calculatePalindromeSubstring(s, isPalin);
+    std::vector<std::string> onePartition;
+    std::vector<std::vector<std::string>> allPartitions;
+    allPalindromePartitioning(s, 0, size - 1, isPalin, onePartition, allPartitions);
+    std::for_each(allPartitions.begin(), allPartitions.end(), [](std::vector<std::string> v) {
+        int len = (int) v.size();
+        for (int i = 0; i < len; i++) {
+            std::cout << v[i] << " ";
+        }
+        std::cout << std::endl;
+    });
+}
+
+void testGetAllPalindromePartitioning() {
+    std::string s = "abacdccdaa";
+    getAllPalindromePartitioning(s);
+}
+
 int main() {
-    testMinPalindromePartitioning();
+    testGetAllPalindromePartitioning();
     return 0;
 }
