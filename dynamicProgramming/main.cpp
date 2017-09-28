@@ -511,7 +511,8 @@ void testMaxRectangleHistogram() {
 /*
  * Time Complexity: O(n)
  */
-int maxRectangleHistogram2(const std::vector<int> &a) {
+int maxRectangleHistogram2(std::vector<int> a) {
+    a.push_back(0);
     std::stack<int> s;
     int size = (int) a.size();
     int maxArea = INT_MIN;
@@ -558,13 +559,10 @@ int max2DRectangle(const std::vector<std::vector<int>> &a) {
 }
 
 void testMax2DRectangle() {
-    std::vector<std::vector<int>> a = {{0, 1, 0, 1, 1, 1, 1, 0, 0},
-                                       {0, 1, 0, 1, 0, 0, 0, 0, 0},
-                                       {0, 1, 1, 1, 1, 1, 1, 0, 0},
-                                       {0, 1, 1, 1, 1, 1, 0, 0, 0},
-                                       {0, 1, 0, 1, 1, 1, 1, 0, 0},
-                                       {0, 1, 0, 1, 0, 1, 1, 0, 0},
-                                       {0, 1, 1, 0, 1, 0, 0, 0, 0}};
+    std::vector<std::vector<int>> a = {{1, 0, 1, 0, 0},
+                                       {1, 0, 1, 1, 1},
+                                       {1, 1, 1, 1, 1},
+                                       {1, 0, 0, 1, 0}};
     std::cout << "max rectangle area: " << max2DRectangle(a);
 }
 
@@ -720,6 +718,6 @@ void testGetAllPalindromePartitioning() {
 }
 
 int main() {
-    testGetAllPalindromePartitioning();
+    testMax2DRectangle();
     return 0;
 }

@@ -2,6 +2,7 @@
 #include <vector>
 #include <numeric>
 #include <cmath>
+#include <array>
 
 
 /*
@@ -409,7 +410,21 @@ void testNSumWithNegative() {
     nSumWithNegtive(choose, arr, sum, 0, 0, negative, positive);
 }
 
+void testPermutationArray() {
+    std::array<std::array<int, 2>, 4> a = {
+            {{1,2}, {1,1}, {1,1}, {1,1}},
+    };
+    std::vector<std::array<std::array<int, 2>, 4>> result;
+    result.push_back(a);
+    auto b = a;
+    swap(b[0], b[2]);
+    result.emplace_back(b);
+
+
+
+}
+
 int main() {
-    testNSumWithNegative();
+    testPermutationArray();
     return 0;
 }
