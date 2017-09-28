@@ -124,8 +124,24 @@ void testBinarySearch() {
     cout << binary_search(a.begin(), a.end(), 6) << endl;
 }
 
+void testMinMax() {
+    cout << min(1, 2, [](int i, int j) { return i < j; }) << endl;
+    cout << max(3, 4) << endl;
+    cout << max(3, 4, [](int i, int j) { return i < j; }) << endl;
+    int a[] = {0, 100, 1, 2, 3, 3, 4, 4, 4, 4, 4, 5, 6, 7, 7, 9, 9};
+    cout << *min_element(a, a + 17) << endl;
+    cout << *max_element(a, a + 17) << endl;
+    auto minmaxpair = minmax_element(a, a + 17);
+    cout << "min: " << *minmaxpair.first << " max: " << *minmaxpair.second << endl;
+    auto minMax = minmax(1,4);
+    cout << "min: " << minMax.first << " max: " << minMax.second << endl;
+    // cannot reuse minMax since first and second of it are const
+    auto minMax2 = minmax({1,2,3,4,5,6,34,3});
+    cout << "min: " << minMax2.first << " max: " << minMax2.second << endl;
+}
+
 
 int main() {
-    testBinarySearch();
+    testMinMax();
     return 0;
 }
