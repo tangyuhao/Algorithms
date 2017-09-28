@@ -100,8 +100,32 @@ void testNonModify() {
 
 }
 
+void testBinarySearch() {
+    vector<int> a = {0, 1, 2, 3, 3, 4, 4, 4, 4, 4, 5, 6, 7, 7, 9, 9};
+    cout << distance(a.begin(), lower_bound(a.begin(), a.end(), 4)) << endl; // the first >= target
+    cout << distance(a.begin(), upper_bound(a.begin(), a.end(), 4)) << endl; // the first > target
+    cout << distance(a.begin(), lower_bound(a.begin(), a.end(), 3) - 1) << endl; // the last < target
+    cout << distance(a.begin(), upper_bound(a.begin(), a.end(), 7) - 1) << endl; // the last <= target
+
+    reverse(a.begin(), a.end());
+
+    cout << distance(a.begin(), lower_bound(a.begin(), a.end(), 4, greater<int>())) << endl; // the first <= target
+    cout << distance(a.begin(), upper_bound(a.begin(), a.end(), 4, greater<int>())) << endl; // the first < target
+    cout << distance(a.begin(), lower_bound(a.begin(), a.end(), 3, greater<int>()) - 1) << endl; // the last > target
+    cout << distance(a.begin(), upper_bound(a.begin(), a.end(), 7, greater<int>()) - 1) << endl; // the last <= target
+
+    // equal_range: first is the lower_bound, second is the upper_bound
+    a = {0, 1, 2, 3, 3, 4, 4, 4, 4, 4, 5, 6, 7, 7, 9, 9};
+    auto range = equal_range(a.begin(), a.end(), 4, [](int i, int j) { return i < j; });
+    cout << range.first - a.begin() << " " << range.second - a.begin() << endl;// 差就是个数
+
+    // only used for judge whether an element exists
+    cout << binary_search(a.begin(), a.end(), 8, [](int i, int j) -> bool { return i < j; }) << endl;
+    cout << binary_search(a.begin(), a.end(), 6) << endl;
+}
+
 
 int main() {
-    testNonModify();
+    testBinarySearch();
     return 0;
 }
