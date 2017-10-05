@@ -3,7 +3,10 @@
 #include <numeric>
 #include <cmath>
 #include <array>
+#include <unordered_map>
+#include <unordered_set>
 
+using namespace std;
 
 /*
  * Define the definite mode in an array:
@@ -423,8 +426,37 @@ void testPermutationArray() {
 
 
 }
+int travel(vector<string> locations) {
+    unordered_map<string, int> map;
+    unordered_set<string> dict;
+    for (string location : locations)
+        dict.insert(location);
+    int totalCount = dict.size();
+    int left = 0, right = 0;
+    int cnt = 0;
+    int ans = INT_MAX;
+    while (right < locations.size()) {
+        map[locations[right++]]++;
+        if (map.size() == totalCount) {
+            while (left <= right) {
+                map[locations[left++]]--;
+                if (map[locations[left - 1]] == 0) {
+                    map.erase(locations[left - 1]);
+                    ans = min(ans, right - left + 1);
+                    break;
+                }
+            }
+        }
+    }
+    return ans;
+}
+
+void testTravel() {
+    vector<string> locations = {"a", "b", "c", "b", "ddd", "dfsd"};
+    cout << travel(locations);
+}
 
 int main() {
-    testPermutationArray();
+    testTravel();
     return 0;
 }
