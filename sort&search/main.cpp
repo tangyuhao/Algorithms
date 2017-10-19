@@ -364,7 +364,28 @@ void testBinaryFuncitons() {
               << std::endl;
 }
 
+void threeWayPartition(std::vector<int> &nums, int mid) {
+    int i = 0, j = 0, n = nums.size() - 1;
+    while (j <= n) {
+        if (nums[j] < mid) {
+            std::swap(nums[j++], nums[i++]);
+        } else if (nums[j] > mid) {
+            std::swap(nums[j], nums[n--]);
+        } else
+            j++;
+    }
+}
+
+void testThreeWayPartition() {
+    std::vector<int> nums = {1, 1, 1, 0, 0, 0, 0, 1, 2, 2, 2, 2, 3, 4, 3, 2, 3, 2, 1, 35, 53, 42};
+    int mid = 2;
+    threeWayPartition(nums, mid);
+    for (int i : nums)
+        std::cout << i << " ";
+    std::cout << std::endl;
+}
+
 int main() {
-    testBinaryFuncitons();
+    testThreeWayPartition();
     return 0;
 }
